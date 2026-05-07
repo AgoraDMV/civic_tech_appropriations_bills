@@ -13,8 +13,13 @@ from pathlib import Path
 
 DEFAULT_FIXTURE = Path(__file__).parent / "test_data" / "pdf" / "118hr8752-changes.md"
 
+Location = tuple[int, int, int, int]
+
 _CASE_HEADING = re.compile(r"^## Case (\d+) — (.+)$", re.MULTILINE)
 _TYPE_LINE = re.compile(r"^\*\*Type:\*\*\s+(\w+)", re.MULTILINE)
+_V1_LOCATION_LINE = re.compile(r"^\*\*V1 location:\*\*\s+(.+?)\s*$", re.MULTILINE)
+_V2_LOCATION_LINE = re.compile(r"^\*\*V2 location:\*\*\s+(.+?)\s*$", re.MULTILINE)
+_LOCATION_RANGE = re.compile(r"p\.(\d+)\s+L(\d+)\s*[–-]\s*p\.(\d+)\s+L(\d+)")
 
 
 @dataclass(frozen=True)
@@ -22,6 +27,8 @@ class PdfTestCase:
     number: int
     title: str
     change_type: str
+    v1_location: Location | None
+    v2_location: Location | None
 
 
 def load_cases(path: Path = DEFAULT_FIXTURE) -> list[PdfTestCase]:
@@ -37,6 +44,8 @@ def load_cases(path: Path = DEFAULT_FIXTURE) -> list[PdfTestCase]:
                 number=int(m.group(1)),
                 title=m.group(2).strip(),
                 change_type=_parse_type(body),
+                v1_location=_parse_location(body, _V1_LOCATION_LINE),
+                v2_location=_parse_location(body, _V2_LOCATION_LINE),
             )
         )
     return cases
@@ -47,3 +56,16 @@ def _parse_type(body: str) -> str:
     if not m:
         raise ValueError("missing **Type:** line")
     return m.group(1).lower().strip()
+
+
+def _parse_location(body: str, line_regex: re.Pattern[str]) -> Location | None:
+    m = line_regex.search(body)
+    if not m:
+        raise ValueError(f"missing location line for pattern {line_regex.pattern}")
+    value = m.group(1).strip()
+    if value.startswith("N/A"):
+        return None
+    range_match = _LOCATION_RANGE.search(value)
+    if not range_match:
+        raise ValueError(f"unparseable location: {value!r}")
+    return tuple(int(g) for g in range_match.groups())  # type: ignore[return-value]
