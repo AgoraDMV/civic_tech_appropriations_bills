@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from html import escape
 
-from formatters._text import word_diff
+from formatters._text import fmt_dollar, word_diff
 from formatters.view_model import ChangeView, DiffView
 
 __all__ = ["format_diff_html"]
@@ -48,6 +48,10 @@ def _build_card(change: ChangeView, index: int) -> str:
         parts.append(change.citation_html)
 
     parts.append(_card_body_html(change))
+
+    callout = _build_callout(change)
+    if callout:
+        parts.append(callout)
 
     parts.append("</div>")
     return "\n".join(parts)
@@ -97,6 +101,70 @@ def _moved_body_html(change: ChangeView) -> str:
     return "\n".join(parts)
 
 
+def _build_callout(change: ChangeView) -> str:
+    """Render the financial callout for a card.
+
+    Canonical layout (choice #12): PDF's flex rows with semantic delta classes
+    (.increase / .decrease / .unchanged) for color. Returns "" when there are
+    no real amount changes and no amendment annotations.
+
+    `change.amount_pairs` is already filtered to real changes (by the adapters),
+    so this function does not re-filter — every pair becomes a row.
+    """
+    if not change.amount_pairs and not change.has_amendment_annotations:
+        return ""
+    parts = ['<div class="financial-callout">']
+    for old, new in change.amount_pairs:
+        # Adapters guarantee both sides are present; assert defensively.
+        assert old is not None and new is not None
+        diff = new - old
+        if diff > 0:
+            delta_str = f"+{fmt_dollar(diff)}"
+            delta_class = "increase"
+        elif diff < 0:
+            # Sign goes outside the dollar formatter so the result is "-$500", not "$-500".
+            delta_str = f"-{fmt_dollar(abs(diff))}"
+            delta_class = "decrease"
+        else:
+            delta_str = fmt_dollar(0)
+            delta_class = "unchanged"
+        parts.append(
+            f'<div class="row"><span class="label">Amount:</span>'
+            f"<span>{fmt_dollar(old)} &rarr; {fmt_dollar(new)}</span>"
+            f'<span class="delta {delta_class}">({delta_str})</span></div>'
+        )
+    if change.has_amendment_annotations:
+        parts.append('<div class="amendment-note">Includes floor amendment annotations (increased/reduced by)</div>')
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def _build_nav_item(change: ChangeView, index: int) -> str:
+    """Render a single sidebar <li> for a change."""
+    nav_class = "nav-item unanchored" if change.degraded else "nav-item"
+    label = change.nav_label_html
+    if change.section_number:
+        label = f"{escape(change.section_number)} — {label}"
+    return (
+        f'<li class="{nav_class}" data-type="{change.change_type}">'
+        f'<a href="#change-{index}">'
+        f'<span class="badge badge-{change.change_type}">{change.change_type}</span> '
+        f"{label}"
+        f"</a></li>"
+    )
+
+
+def _build_sidebar(view: DiffView) -> str:
+    """Render the sidebar nav. Empty <ul></ul> when there are no changes."""
+    items = "".join(_build_nav_item(c, i) for i, c in enumerate(view.changes))
+    return (
+        '<nav class="sidebar">\n'
+        '<input type="text" id="sidebar-filter" placeholder="Filter sections...">\n'
+        f"<ul>{items}</ul>\n"
+        "</nav>"
+    )
+
+
 def _versions_html(view: DiffView) -> str:
     """Render the versions line.
 
@@ -142,16 +210,6 @@ def _bill_label(view: DiffView) -> str:
     return f"{escape(str(view.bill_type).upper())} {escape(str(view.bill_number))}"
 
 
-def _sidebar_html(view: DiffView) -> str:
-    """Sidebar shell. The <li> entries are filled in step 7; for now an empty <ul>."""
-    return (
-        '<nav class="sidebar">\n'
-        '<input type="text" id="sidebar-filter" placeholder="Filter sections...">\n'
-        "<ul></ul>\n"
-        "</nav>"
-    )
-
-
 def _cards_section_html(view: DiffView) -> str:
     """Cards section: stitch built cards together, or show a no-changes message."""
     if not view.changes:
@@ -179,7 +237,7 @@ def format_diff_html(view: DiffView) -> str:
 </head>
 <body>
 <div class="layout">
-{_sidebar_html(view)}
+{_build_sidebar(view)}
 <div class="main">
 <div class="report-header">
 <h1>{bill_label} &mdash; Comparison</h1>
