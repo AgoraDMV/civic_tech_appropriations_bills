@@ -14,7 +14,7 @@ from __future__ import annotations
 from html import escape
 
 from diff_pdf import PdfDiff, PdfHunk
-from formatters.html import fmt_dollar, word_diff
+from formatters._text import fmt_dollar, word_diff
 from parsers.pdf_anchors import Anchor, breadcrumb_for
 
 
