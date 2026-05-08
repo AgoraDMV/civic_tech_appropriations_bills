@@ -14,16 +14,87 @@ from __future__ import annotations
 
 from html import escape
 
-from formatters.view_model import DiffView
-
-# Card / callout / sidebar / financial-summary builders are filled in across
-# steps 6-8. The skeleton in this module ties them together; for now,
-# format_diff_html emits the chrome plus an empty changes section.
+from formatters._text import word_diff
+from formatters.view_model import ChangeView, DiffView
 
 __all__ = ["format_diff_html"]
 
 
 _SUMMARY_ORDER = ("modified", "added", "removed", "moved")
+
+
+def _build_card(change: ChangeView, index: int) -> str:
+    """Render one ChangeView as a complete <div class="change-card">.
+
+    Renders pipeline-specific features when their corresponding view-model
+    fields are populated:
+    - section_number → <span class="section-number"> inside the header
+    - citation_html → emitted between header and body
+    - degraded → adds "unanchored" to the card class and "degraded" to the h3
+    - move_info_html → emitted at the top of a moved card's body region
+    """
+    extra_card_class = " unanchored" if change.degraded else ""
+    h3_class = ' class="degraded"' if change.degraded else ""
+
+    parts = [f'<div class="change-card {change.change_type}{extra_card_class}" id="change-{index}">']
+    parts.append('<div class="change-header">')
+    parts.append(f'<span class="badge badge-{change.change_type}">{change.change_type}</span>')
+    parts.append(f"<h3{h3_class}>{change.heading_html}</h3>")
+    if change.section_number:
+        parts.append(f'<span class="section-number">{escape(change.section_number)}</span>')
+    parts.append("</div>")
+
+    if change.citation_html:
+        parts.append(change.citation_html)
+
+    parts.append(_card_body_html(change))
+
+    parts.append("</div>")
+    return "\n".join(parts)
+
+
+def _card_body_html(change: ChangeView) -> str:
+    """Render the body region of a card. Excludes header, citation, callout."""
+    if change.change_type == "added":
+        return f'<div class="change-body added-text">{escape(change.new_text)}</div>'
+    if change.change_type == "removed":
+        return f'<div class="change-body removed-text">{escape(change.old_text)}</div>'
+    if change.change_type == "moved":
+        return _moved_body_html(change)
+    # modified (and any other / unknown type defaults to modified-style)
+    return _prose_body_html(change.old_text, change.new_text)
+
+
+def _prose_body_html(old_text: str, new_text: str) -> str:
+    """Render a prose diff: inline word-diff when similar enough, stacked otherwise.
+
+    This is the canonical body for `modified` changes and the canonical fallback
+    for `moved` changes whose texts differ (canonical choice #10).
+    """
+    inline = word_diff(old_text, new_text) if (old_text and new_text) else None
+    if inline is not None:
+        return f'<div class="change-body diff-inline">{inline}</div>'
+    return (
+        '<div class="change-body">\n'
+        f'<div class="old-text">{escape(old_text)}</div>\n'
+        f'<div class="new-text">{escape(new_text)}</div>\n'
+        "</div>"
+    )
+
+
+def _moved_body_html(change: ChangeView) -> str:
+    """Moved-card body: move-info div, then the prose diff (or single body when texts match)."""
+    parts: list[str] = []
+    if change.move_info_html:
+        parts.append(change.move_info_html)
+    if change.old_text == change.new_text:
+        # Identical text — single body div with the (one) text. Prefer new_text;
+        # fall back to old_text when new_text is empty (only possible if both are "").
+        body = change.new_text or change.old_text
+        parts.append(f'<div class="change-body">{escape(body)}</div>')
+    else:
+        parts.append(_prose_body_html(change.old_text, change.new_text))
+    return "\n".join(parts)
 
 
 def _versions_html(view: DiffView) -> str:
@@ -82,11 +153,10 @@ def _sidebar_html(view: DiffView) -> str:
 
 
 def _cards_section_html(view: DiffView) -> str:
-    """Cards section. Card builder lands in step 6; for now, empty == no-changes message."""
+    """Cards section: stitch built cards together, or show a no-changes message."""
     if not view.changes:
         return '<p class="no-changes">No changes found between these versions.</p>'
-    # Placeholder until step 6 fills in the card builder.
-    return ""
+    return "\n".join(_build_card(c, i) for i, c in enumerate(view.changes))
 
 
 def _financial_summary_html(view: DiffView) -> str:
