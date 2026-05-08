@@ -191,24 +191,25 @@ def _has_amendment_annotations(v1_text: str, v2_text: str) -> bool:
     return bool(_AMENDMENT_RE_DETAIL.search(v1_text) or _AMENDMENT_RE_DETAIL.search(v2_text))
 
 
-def _hunk_for_paired_blocks(v1_block: _Block, v2_block: _Block) -> PdfHunk:
+def _hunk_for_paired_blocks(v1_block: _Block, v2_block: _Block, similarity: float | None = None) -> PdfHunk:
     """Emit a hunk for two blocks paired by alignment.
 
     Classifies as `moved` when anchors differ but bodies are highly similar
     (renumbered SEC.), else `modified`. Caller has already confirmed v1 and v2
     block texts differ — this routine doesn't filter equal blocks.
+
+    `similarity`, if provided, is the precomputed `_text_similarity` between
+    v1 and v2 text. Caller can pass it to avoid a second computation when it
+    already had to compute one (e.g. to decide split-vs-pair upstream).
     """
     v1_text = v1_block.text
     v2_text = v2_block.text
     v1_anchor = v1_block.anchor
     v2_anchor = v2_block.anchor
-    if (
-        v1_anchor
-        and v2_anchor
-        and v1_anchor.text != v2_anchor.text
-        and _text_similarity(v1_text, v2_text) >= _MOVE_SIMILARITY_THRESHOLD
-    ):
-        change_type: ChangeType = "moved"
+    if v1_anchor and v2_anchor and v1_anchor.text != v2_anchor.text:
+        if similarity is None:
+            similarity = _text_similarity(v1_text, v2_text)
+        change_type: ChangeType = "moved" if similarity >= _MOVE_SIMILARITY_THRESHOLD else "modified"
     else:
         change_type = "modified"
     return PdfHunk(
@@ -334,11 +335,12 @@ def diff_pdfs(v1_pages: list[Page], v2_pages: list[Page]) -> PdfDiff:
         """Emit a paired-block hunk OR split into removed+added if bodies disagree."""
         if v1_b.text == v2_b.text:
             return
-        if _text_similarity(v1_b.text, v2_b.text) < _PAIR_BODY_THRESHOLD:
+        sim = _text_similarity(v1_b.text, v2_b.text)
+        if sim < _PAIR_BODY_THRESHOLD:
             sink.append(_hunk_for_removed(v1_b))
             sink.append(_hunk_for_added(v2_b))
         else:
-            sink.append(_hunk_for_paired_blocks(v1_b, v2_b))
+            sink.append(_hunk_for_paired_blocks(v1_b, v2_b, similarity=sim))
 
     hunks: list[PdfHunk] = []
     for op, i1, i2, j1, j2 in matcher.get_opcodes():
