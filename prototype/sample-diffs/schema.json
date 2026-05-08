@@ -12,6 +12,21 @@
       "pattern": "^1\\.[0-9]+$",
       "description": "Major.minor. Consumers reject unknown majors."
     },
+    "full_text": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["v1", "v2"],
+          "additionalProperties": false,
+          "properties": {
+            "v1": { "type": "string" },
+            "v2": { "type": "string" }
+          }
+        }
+      ],
+      "description": "Optional (v1.1+) full bill text per side, for full-document tracked-changes rendering."
+    },
     "generator": {
       "type": "object",
       "additionalProperties": false,

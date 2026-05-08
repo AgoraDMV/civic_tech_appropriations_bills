@@ -1,4 +1,4 @@
-# Canonical Diff JSON — v1.0
+# Canonical Diff JSON — v1.1
 
 This document specifies the canonical JSON shape produced when comparing two
 versions of a bill. It is the public contract between the diff engine and any
@@ -8,7 +8,15 @@ XML inputs and a diff produced from PDF inputs share this shape.
 
 ## Versioning
 
-Top-level field: `schema_version: "1.0"`.
+Top-level field: `schema_version: "1.1"`.
+
+## Changelog
+
+- **1.1** — Added optional top-level `full_text: { v1, v2 } | null` field
+  carrying complete bill text per side. Renderers MAY use it for a
+  Word-style tracked-changes view over the whole document. Backward
+  compatible with 1.0 (consumers that ignore unknown fields keep working).
+- **1.0** — Initial public contract.
 
 - Consumers SHOULD reject documents whose major version they do not understand.
 - Additive, backward-compatible changes (new optional fields) bump the minor:
@@ -28,7 +36,7 @@ Top-level field: `schema_version: "1.0"`.
 
 ```jsonc
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "generator": { "name": "appropriations_bills", "version": "0.x" },
   "bill":      { "type": "HR", "number": 4366, "congress": 118 },
   "versions": {
@@ -36,9 +44,31 @@ Top-level field: `schema_version: "1.0"`.
     "v2": { "label": "Public Law",         "version_number": 4,    "source": "xml" }
   },
   "summary":  { "added": 12, "removed": 8, "modified": 47, "moved": 3 },
+  "full_text": {                            // optional, v1.1+
+    "v1": "TITLE I—…\n\nSECTION 101. …",
+    "v2": "TITLE I—…\n\nSECTION 101. …"
+  },
   "changes":  [ /* ChangeObject, see below */ ]
 }
 ```
+
+### `full_text` (optional, v1.1+)
+
+Top-level object containing the complete bill text per side. When present,
+both `v1` and `v2` are non-null strings. The whole field is `null` (or
+absent entirely) when full text isn't available — consumers MUST handle
+that gracefully (e.g., disable a full-document view).
+
+| Field | Type   | Notes |
+|-------|--------|-------|
+| `v1`  | string | Complete v1 bill text. |
+| `v2`  | string | Complete v2 bill text. |
+
+The producer is not required to align this text byte-for-byte with the
+fragments in `changes[].text` — `full_text` is the document; `text.old`/
+`text.new` are the diff fragments. Consumers using `full_text` for
+rendering should compute the diff at render time over the full strings,
+not try to splice the change fragments into the document.
 
 ### `bill`
 
