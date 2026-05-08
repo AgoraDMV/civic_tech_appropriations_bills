@@ -1,9 +1,9 @@
 /* ----------------------------------------------------------------------
    Bill Diff — Staffer Tool Prototype (vanilla JS, no framework)
 
-   Loads canonical diff JSON (schema v1.0) and renders two views:
-     - cards:  per-change side-by-side cards
-     - inline: tracked-changes inline blocks with word-level marks
+   Loads canonical diff JSON (schema v1.1) and renders two views:
+     - changes: per-change tracked-changes blocks (default)
+     - full:    full bill text with Word-style tracked changes inline
 
    No network beyond fetching the local sample JSONs. No analytics.
    ---------------------------------------------------------------------- */
@@ -35,11 +35,11 @@ const SAMPLES = [
 const state = {
   currentSampleId: null,
   currentDiff: null,
-  view: 'cards',
+  view: 'changes',
   filter: 'all',
 };
 
-// --- DOM refs ---------------------------------------------------------------
+// --- DOM refs --------------------------------------------------------------
 
 const $ = (id) => document.getElementById(id);
 const libraryList = $('library-list');
@@ -107,22 +107,36 @@ function renderContent() {
   const d = state.currentDiff;
   if (!d) return;
 
-  const filtered = applyFilter(d.changes);
-
   let html = renderSummaryBar(d.summary);
 
+  if (state.view === 'full') {
+    if (!d.full_text) {
+      html += '<div class="empty-state">Full-bill view not available for this sample (no <code>full_text</code> in the canonical JSON).</div>';
+      content.innerHTML = html;
+      return;
+    }
+    html += '<div class="full-bill-loading">Computing full-bill diff…</div>';
+    content.innerHTML = html;
+    // Defer to next frame so the loading text actually paints before we block
+    // the main thread on a large diff.
+    requestAnimationFrame(() => {
+      const start = performance.now();
+      const body = renderFullBill(d.full_text.v1, d.full_text.v2);
+      const ms = (performance.now() - start).toFixed(0);
+      content.innerHTML = renderSummaryBar(d.summary) +
+        `<div class="full-bill-meta">Computed in ${ms} ms · ${d.full_text.v1.length.toLocaleString()} → ${d.full_text.v2.length.toLocaleString()} chars</div>` +
+        `<div class="full-bill">${body}</div>`;
+    });
+    return;
+  }
+
+  const filtered = applyFilter(d.changes);
   if (filtered.length === 0) {
     html += '<div class="empty-state">No changes match the current filter.</div>';
     content.innerHTML = html;
     return;
   }
-
-  if (state.view === 'cards') {
-    html += renderCards(filtered);
-  } else {
-    html += renderInline(filtered);
-  }
-
+  html += renderChanges(filtered);
   content.innerHTML = html;
 }
 
@@ -150,84 +164,50 @@ function applyFilter(changes) {
   return changes.filter((c) => c.change_type !== 'modified');
 }
 
-// --- Cards view ------------------------------------------------------------
+// --- Per-change blocks (default view) --------------------------------------
 
-function renderCards(changes) {
-  return `<div class="cards">${changes.map(renderCard).join('')}</div>`;
+function renderChanges(changes) {
+  return `<div class="change-list">${changes.map(renderChangeBlock).join('')}</div>`;
 }
 
-function renderCard(c) {
-  const degradedClass = c.anchor_resolution === 'degraded' ? ' card--degraded' : '';
-  const headingClass = c.anchor_resolution === 'degraded' ? ' card__heading--degraded' : '';
-  const sectionNum = c.section_number ? `<span class="card__section-number">§${escapeHtml(c.section_number)}</span>` : '';
-
-  return `
-    <article class="card card--${c.change_type}${degradedClass}" id="${c.id}">
-      <header class="card__head">
-        <span class="card__type card__type--${c.change_type}">${c.change_type.toUpperCase()}</span>
-        ${sectionNum}
-        <span class="card__heading${headingClass}">${renderHeading(c)}</span>
-      </header>
-      ${renderCitation(c)}
-      ${renderMove(c)}
-      ${renderBody(c)}
-      ${renderAmounts(c)}
-    </article>
-  `;
-}
-
-function renderHeading(c) {
-  if (c.anchor_resolution === 'degraded') {
-    return 'anchor unresolved · see PDF for context';
+function renderChangeBlock(c) {
+  const head = renderChangeHead(c);
+  let body;
+  if (c.change_type === 'added') {
+    body = `<ins class="diff-add">${escapeHtml(c.text.new || '')}</ins>`;
+  } else if (c.change_type === 'removed') {
+    body = `<del class="diff-del">${escapeHtml(c.text.old || '')}</del>`;
+  } else if (c.change_type === 'moved' && c.move && c.move.body_unchanged) {
+    body = `<em class="muted">(body text unchanged)</em>`;
+  } else {
+    body = renderWordDiff(c.text.old || '', c.text.new || '');
   }
-  const path = c.path.v2 || c.path.v1 || [];
-  if (path.length === 0) return '<em>(unknown location)</em>';
-  return path.map(escapeHtml).join(' &gt; ');
+  return `<article class="change-block change-block--${c.change_type}" id="${c.id}">
+    <header class="change-block__head">${head}</header>
+    ${renderMoveCallout(c)}
+    <div class="change-block__body">${body}</div>
+    ${renderAmounts(c)}
+  </article>`;
 }
 
-function renderCitation(c) {
-  if (!c.location) return '';
-  const v1 = c.location.v1 ? formatRange(c.location.v1) : '— (new in v2)';
-  const v2 = c.location.v2 ? formatRange(c.location.v2) : '— (removed in v2)';
-  return `<div class="card__citation"><span class="v1">${escapeHtml(v1)}</span><span class="v2">${escapeHtml(v2)}</span></div>`;
+function renderChangeHead(c) {
+  const path = (c.path.v2 || c.path.v1 || []).map(escapeHtml).join(' &gt; ');
+  const location = c.location && (c.location.v2 || c.location.v1);
+  const loc = location ? ` · <span class="loc">${escapeHtml(formatRange(location))}</span>` : '';
+  const sectionNum = c.section_number ? `<span class="section-num">§${escapeHtml(c.section_number)}</span> ` : '';
+  const tag = `<span class="change-tag change-tag--${c.change_type}">${c.change_type.toUpperCase()}</span>`;
+  return `${tag} ${sectionNum}${path || '<em>(unknown)</em>'}${loc}`;
 }
 
-function formatRange(r) {
-  const start = r.start_line == null ? `p.${r.start_page}` : `p.${r.start_page} L${r.start_line}`;
-  const end = r.end_line == null ? `p.${r.end_page}` : `p.${r.end_page} L${r.end_line}`;
-  return start === end ? start : `${start} – ${end}`;
-}
-
-function renderMove(c) {
+function renderMoveCallout(c) {
   if (!c.move) return '';
   if (c.move.kind === 'renumbered') {
     const tail = c.move.body_unchanged ? ' · body text unchanged' : '';
-    return `<div class="card__move">Renumbered: <code>${escapeHtml(c.move.old_label)}</code> → <code>${escapeHtml(c.move.new_label)}</code>${tail}</div>`;
+    return `<div class="move-callout">Renumbered: <code>${escapeHtml(c.move.old_label)}</code> → <code>${escapeHtml(c.move.new_label)}</code>${tail}</div>`;
   }
-  // relocated
   const v1 = (c.path.v1 || []).map(escapeHtml).join(' &gt; ');
   const v2 = (c.path.v2 || []).map(escapeHtml).join(' &gt; ');
-  return `<div class="card__move">Moved: ${v1} → ${v2}</div>`;
-}
-
-function renderBody(c) {
-  const oldT = c.text.old;
-  const newT = c.text.new;
-  if (oldT == null && newT == null) return '';
-  if (oldT == null) {
-    return `<div class="card__body card__body--single">
-      <div class="body-col body-col--new"><div class="body-col__label">v2 (added)</div>${escapeHtml(newT)}</div>
-    </div>`;
-  }
-  if (newT == null) {
-    return `<div class="card__body card__body--single">
-      <div class="body-col body-col--old"><div class="body-col__label">v1 (removed)</div>${escapeHtml(oldT)}</div>
-    </div>`;
-  }
-  return `<div class="card__body">
-    <div class="body-col body-col--old"><div class="body-col__label">v1</div>${escapeHtml(oldT)}</div>
-    <div class="body-col body-col--new"><div class="body-col__label">v2</div>${escapeHtml(newT)}</div>
-  </div>`;
+  return `<div class="move-callout">Moved: ${v1} → ${v2}</div>`;
 }
 
 function renderAmounts(c) {
@@ -243,55 +223,75 @@ function renderAmounts(c) {
       <span class="amount-row__delta">${sign}${formatDollars(delta)}${pct}</span>
     </div>`;
   }).join('');
-  return `<div class="card__amounts"><div class="card__amounts-title">Financial</div>${rows}</div>`;
+  return `<div class="amounts"><div class="amounts__title">Financial</div>${rows}</div>`;
+}
+
+function formatRange(r) {
+  const start = r.start_line == null ? `p.${r.start_page}` : `p.${r.start_page} L${r.start_line}`;
+  const end = r.end_line == null ? `p.${r.end_page}` : `p.${r.end_page} L${r.end_line}`;
+  return start === end ? start : `${start} – ${end}`;
 }
 
 function formatDollars(n) {
   return '$' + n.toLocaleString('en-US');
 }
 
-// --- Inline tracked-changes view ------------------------------------------
+// --- Full-bill tracked-changes view ----------------------------------------
 
-function renderInline(changes) {
-  return `<div class="inline-view">${changes.map(renderInlineBlock).join('')}</div>`;
-}
+// Strategy: line-level LCS to find aligned regions, then word-level LCS
+// inside each replace block (with a token-count cap so worst-case real
+// bills don't blow the dp table).
+const WORD_DIFF_CAP = 4000; // tokens per side; above this we fall back to whole-block marks.
 
-function renderInlineBlock(c) {
-  const head = renderInlineHead(c);
-  let body;
-  if (c.change_type === 'added') {
-    body = `<ins class="diff-add">${escapeHtml(c.text.new || '')}</ins>`;
-  } else if (c.change_type === 'removed') {
-    body = `<del class="diff-del">${escapeHtml(c.text.old || '')}</del>`;
-  } else if (c.change_type === 'moved' && c.move && c.move.body_unchanged) {
-    body = escapeHtml(c.text.new || c.text.old || '');
-  } else {
-    body = renderWordDiff(c.text.old || '', c.text.new || '');
+function renderFullBill(v1Text, v2Text) {
+  const aLines = v1Text.split('\n');
+  const bLines = v2Text.split('\n');
+  const ops = lcsLines(aLines, bLines);
+  const out = [];
+  let pending = { delLines: [], insLines: [] };
+
+  const flush = () => {
+    if (pending.delLines.length === 0 && pending.insLines.length === 0) return;
+    out.push(renderReplace(pending.delLines, pending.insLines));
+    pending = { delLines: [], insLines: [] };
+  };
+
+  for (const op of ops) {
+    if (op.type === 'eq') {
+      flush();
+      out.push(`<div class="bill-line">${escapeHtml(op.line)}</div>`);
+    } else if (op.type === 'del') {
+      pending.delLines.push(op.line);
+    } else if (op.type === 'add') {
+      pending.insLines.push(op.line);
+    }
   }
-  return `<div class="inline-block inline-block--${c.change_type}" id="inline-${c.id}">
-    <div class="inline-block__head">${head}</div>
-    <div class="inline-block__body">${body}</div>
-  </div>`;
+  flush();
+  return out.join('');
 }
 
-function renderInlineHead(c) {
-  const path = (c.path.v2 || c.path.v1 || []).map(escapeHtml).join(' &gt; ');
-  const location = c.location && (c.location.v2 || c.location.v1);
-  const loc = location ? ` · ${escapeHtml(formatRange(location))}` : '';
-  const move = c.move
-    ? c.move.kind === 'renumbered'
-      ? ` · renumbered ${escapeHtml(c.move.old_label)} → ${escapeHtml(c.move.new_label)}`
-      : ' · relocated'
-    : '';
-  const tag = c.change_type.toUpperCase();
-  return `<strong>${tag}</strong> · ${path || '<em>(unknown)</em>'}${loc}${move}`;
-}
-
-// Word-level LCS diff. Splits on whitespace boundaries while keeping the
-// runs intact. Output is a sequence of <ins> / <del> / equal spans.
-function renderWordDiff(oldText, newText) {
+function renderReplace(delLines, insLines) {
+  if (delLines.length === 0) {
+    return `<div class="bill-line bill-line--ins"><ins class="diff-add">${escapeHtml(insLines.join('\n'))}</ins></div>`;
+  }
+  if (insLines.length === 0) {
+    return `<div class="bill-line bill-line--del"><del class="diff-del">${escapeHtml(delLines.join('\n'))}</del></div>`;
+  }
+  // Both sides present: try word-level diff over the joined text if it fits
+  // under the perf cap, otherwise show whole-block strike + insert.
+  const oldText = delLines.join('\n');
+  const newText = insLines.join('\n');
   const a = tokenize(oldText);
   const b = tokenize(newText);
+  if (a.length > WORD_DIFF_CAP || b.length > WORD_DIFF_CAP) {
+    return `<div class="bill-line bill-line--mod">
+      <del class="diff-del">${escapeHtml(oldText)}</del><ins class="diff-add">${escapeHtml(newText)}</ins>
+    </div>`;
+  }
+  return `<div class="bill-line bill-line--mod">${renderTokenDiff(a, b)}</div>`;
+}
+
+function renderTokenDiff(a, b) {
   const ops = lcsDiff(a, b);
   let out = '';
   let buf = { type: null, text: '' };
@@ -310,13 +310,41 @@ function renderWordDiff(oldText, newText) {
   return out;
 }
 
+// Line-level LCS. Hashes lines first so equality compares are O(1) ints.
+function lcsLines(a, b) {
+  const m = a.length, n = b.length;
+  // Build dp table over int hashes.
+  const dp = new Array(m + 1);
+  for (let i = 0; i <= m; i++) dp[i] = new Int32Array(n + 1);
+  for (let i = m - 1; i >= 0; i--) {
+    for (let j = n - 1; j >= 0; j--) {
+      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const ops = [];
+  let i = 0, j = 0;
+  while (i < m && j < n) {
+    if (a[i] === b[j]) { ops.push({ type: 'eq', line: a[i] }); i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ type: 'del', line: a[i] }); i++; }
+    else { ops.push({ type: 'add', line: b[j] }); j++; }
+  }
+  while (i < m) ops.push({ type: 'del', line: a[i++] });
+  while (j < n) ops.push({ type: 'add', line: b[j++] });
+  return ops;
+}
+
+// Word-level LCS for the per-change view and small full-bill replace blocks.
+function renderWordDiff(oldText, newText) {
+  const a = tokenize(oldText);
+  const b = tokenize(newText);
+  return renderTokenDiff(a, b);
+}
+
 function tokenize(text) {
-  // Keep word/whitespace splits as separate tokens so output preserves spacing.
   return text.match(/\s+|[^\s]+/g) || [];
 }
 
 function lcsDiff(a, b) {
-  // Compute LCS table, then walk back to emit ops.
   const m = a.length, n = b.length;
   const dp = new Array(m + 1);
   for (let i = 0; i <= m; i++) dp[i] = new Int32Array(n + 1);
@@ -332,8 +360,8 @@ function lcsDiff(a, b) {
     else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push({ type: 'del', text: a[i] }); i++; }
     else { ops.push({ type: 'add', text: b[j] }); j++; }
   }
-  while (i < m) { ops.push({ type: 'del', text: a[i++] }); }
-  while (j < n) { ops.push({ type: 'add', text: b[j++] }); }
+  while (i < m) ops.push({ type: 'del', text: a[i++] });
+  while (j < n) ops.push({ type: 'add', text: b[j++] });
   return ops;
 }
 
