@@ -153,7 +153,7 @@ Four modules:
 - **`fetch_bills.py`** - Downloads bill XML from Congress.gov API v3. CLI commands: `versions`, `download`, `download-all`.
 - **`bill_tree.py`** - Normalizes bill XML into a `BillTree` of `BillNode` objects. Handles divisions, titles, and flat sections, plus structural containers within titles (subtitle, part, chapter, subchapter). Captures preamble sections that sit alongside divisions or titles.
 - **`diff_bill.py`** - Compares two `BillTree`s. Uses division-aware matching for omnibus bills (resolves cross-division path collisions by normalized division title). Detects false matches via text similarity, reconciles moved sections, and extracts dollar amounts (stripping floor amendment annotations before comparison, flagging their presence separately).
-- **`formatters/html.py`** - Generates standalone HTML reports from diff output with sidebar navigation, financial summary table, and word-level inline diffs.
+- **`formatters/diff_html.py`** - Generates standalone HTML reports from diff output (via adapters that feed both XML and PDF diffs through one renderer) with sidebar navigation, financial summary table, and word-level inline diffs.
 
 ## Testing
 
@@ -169,7 +169,11 @@ uv run pytest test_corpus_properties.py    # Corpus-wide property tests
 uv run pytest test_validate_extraction.py  # External validation tests
 ```
 
-Tests that require real bill XML files are marked `@pytest.mark.slow`. The fast suite (`-m "not slow"`) runs 218 unit tests using inline XML and mocked data. CI runs the fast suite automatically on every PR.
+Tests that require real bill XML files are marked `@pytest.mark.slow`. The fast suite (`-m "not slow"`) runs entirely on inline XML and mocked data, needs no downloads, and finishes quickly. CI runs it automatically on every PR. The slow suite adds corpus-wide property checks, cross-version diff validation, and external ground-truth validation against real bills.
+
+The diff engine is fully deterministic: no LLM and no API key. The only API key (`CONGRESS_API_KEY`) is used by `fetch_bills.py` to download bills, not by the diff itself.
+
+See [TESTING.md](TESTING.md) for how the test suite is organized, how diff accuracy is validated, what each validation layer proves, and where the known gaps are.
 
 Integration tests use real XML files from `bills/` and skip if not present. To run the full suite including validation tests, download the required bills:
 
@@ -194,4 +198,4 @@ uv run python fetch_bills.py download 113 hr 83
 uv run python fetch_bills.py download 113 hr 3547
 ```
 
-The validation tests compare 414 extracted line items across 7 Legislative Branch bills (FY2014-FY2020) against amounts from a curated appropriations spreadsheet. The corpus property tests (`test_corpus_properties.py`) check dollar coverage, path uniqueness, and character coverage across all downloaded bills.
+The validation tests compare extracted line items across Legislative Branch bills (both chambers, multiple fiscal years) against amounts from a curated appropriations spreadsheet. The corpus property tests (`test_corpus_properties.py`) check dollar coverage, path uniqueness, and character coverage across all downloaded bills. See [TESTING.md](TESTING.md) for what each validation layer proves and where the gaps are.

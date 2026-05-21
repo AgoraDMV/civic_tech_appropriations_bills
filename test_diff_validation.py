@@ -60,8 +60,10 @@ def _find_change(diff, match_path):
 class TestControlledDiff:
     """Golden test: small diff between reported-in-house and engrossed-in-house.
 
-    Same bill structure, minor content changes. 172 total changes, all
-    manually verified via diff output inspection.
+    Same bill structure, minor content changes (172 total changes). The
+    assertions below encode specific expectations spot-checked against the diff
+    output; they are regression guardrails, not an exhaustive review of every
+    change.
     """
 
     def test_no_removed_sections(self, hr4366_v1_v2_diff):
@@ -124,7 +126,8 @@ class TestControlledDiff:
         """Regression baseline for summary counts.
 
         Current values (2026-04-15): added=7, modified=16, unchanged=148, moved=1.
-        These are verified correct. Changes indicate a parser/matching regression.
+        Recorded as a baseline; a change here flags a parser/matching regression
+        to investigate.
         """
         s = hr4366_v1_v2_diff.summary
         assert s["added"] == 7
@@ -333,8 +336,8 @@ class TestDeadZoneBaseline:
     def test_move_detection_baseline(self, hr5895_v4_v5_diff):
         """Regression baseline for move detection.
 
-        Current: 26 moved sections, all verified correct (including cross-
-        department moves like MilCon general provisions -> Energy & Water).
+        Current: 26 moved sections, including spot-checked cross-department
+        moves like MilCon general provisions -> Energy & Water.
         """
         moved = _changes_by_type(hr5895_v4_v5_diff, "moved")
         assert len(moved) >= 20, f"Move detection regressed: only {len(moved)} moved (baseline: 26)"
