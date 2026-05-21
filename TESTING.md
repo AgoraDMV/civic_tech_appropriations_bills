@@ -97,9 +97,8 @@ readers is not the same as an outside source confirming the numbers are correct
 — that is check 1, and only for the Legislative Branch. (This cross-check also
 surfaced one quirk in the official-text reader, where it can merge a dollar
 figure with an adjacent percentage in non-spending statutory tables; that is
-logged and set aside until fixed.) The soundness pass skips one record-setting
-~5,600-page omnibus where the PDF comparison does not yet finish in reasonable
-time.
+logged and set aside until fixed.) The soundness pass covers every bill,
+including the record-setting ~5,600-page omnibus.
 
 ## Known soft spots
 
@@ -147,6 +146,28 @@ uv run pytest tests/test_pdf_corpus_smoke.py     # PDF comparison soundness acro
 To run the slow group locally, download the bill files first (see the Testing
 section of the [README](README.md#testing)).
 
+### Speeding up the PDF tests for development
+
+The slow PDF tests read every bill PDF, and reading a large omnibus takes a
+couple of minutes. Three levers keep the loop fast:
+
+```bash
+# Restrict both PDF suites to one bill (substring match on the bill name):
+TEST_BILL=4366 uv run pytest tests/test_pdf_xml_amount_recall.py tests/test_pdf_corpus_smoke.py
+
+# Run across all CPU cores:
+uv run pytest -n auto
+
+# Combine them:
+TEST_BILL=4366 uv run pytest -n auto tests/test_pdf_corpus_smoke.py
+```
+
+The first run extracts each PDF and caches the result to
+`test_data/extract_cache/` (gitignored). Every later run loads from that cache
+instead of re-reading the PDF, so re-running the same tests is near-instant. The
+cache is keyed by file modification time, so editing or replacing a PDF
+re-extracts it automatically.
+
 ## Measuring coverage
 
 Coverage measures how much of the comparison code the tests actually exercise.
@@ -160,4 +181,4 @@ uv run pytest --cov --cov-report=html                          # Browsable repor
 
 One caution: coverage tells you which lines of code ran during the tests, not
 whether their output is correct. A high coverage number and a correct result
-are different things. The four checks above are what speak to correctness.
+are different things. The five checks above are what speak to correctness.
