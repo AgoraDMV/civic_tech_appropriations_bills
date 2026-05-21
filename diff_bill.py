@@ -13,7 +13,11 @@ from bill_tree import BillNode, BillTree, normalize_bill, normalize_division_tit
 
 # --- Financial amount extraction ---
 
-_DOLLAR_RE = re.compile(r"\$[\d,]+")
+# A comma-grouped amount must use groups of exactly three digits, so a trailing
+# run of digits (e.g. a percentage abutting with no space: "$17,40022%") falls
+# outside the match instead of merging into it (#34). The no-comma alternative
+# preserves amounts written without thousands separators ("$5000000").
+_DOLLAR_RE = re.compile(r"\$\d{1,3}(?:,\d{3})+|\$\d+")
 _AMENDMENT_RE = re.compile(r"\((?:increased|reduced|decreased) by\s+\$[\d,]+\)")
 
 

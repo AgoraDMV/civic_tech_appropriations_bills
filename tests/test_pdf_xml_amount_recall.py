@@ -39,16 +39,9 @@ pytestmark = pytest.mark.slow
 # These are XML-side over-extractions, not PDF failures, so they are excluded
 # from the recall assertion rather than masking a real PDF bug. Each entry needs
 # a one-line rationale; do not add values here without investigating the cause.
-#
-#   116-hr-133 v6/v7: extract_amounts merges a dollar figure with an adjacent
-#   percentage in FAFSA Simplification Act formula tables ("$17,40022% of AAI"
-#   -> $1,740,022; "$140,00040% of net worth" -> $14,000,040). Non-appropriations
-#   statutory text; the PDF pipeline correctly keeps the space. Tracked in #34;
-#   removing these entries is the acceptance test for that fix.
-_KNOWN_XML_OVEREXTRACTION: dict[str, set[int]] = {
-    "116-hr-133/6_engrossed-amendment-house": {1740022, 14000040},
-    "116-hr-133/7_enrolled-bill": {1740022, 14000040},
-}
+# Currently empty: the only known case (116-hr-133 FAFSA formula tables, where a
+# percentage abutted an amount with no space) was fixed in extract_amounts (#34).
+_KNOWN_XML_OVEREXTRACTION: dict[str, set[int]] = {}
 
 _VERSIONS = dual_format_versions()
 

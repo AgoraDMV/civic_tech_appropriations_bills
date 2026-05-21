@@ -72,6 +72,20 @@ class TestExtractAmounts:
         text = "For expenses, $500,000 (not to exceed $100,000) for operations."
         assert extract_amounts(text) == (500000, 100000)
 
+    def test_amount_abutting_percentage(self):
+        """A percentage with no separating space must not merge into the amount.
+
+        FAFSA formula tables in 116-hr-133 render as "$17,40022% of AAI"; the
+        amount is $17,400 and the 22% is a separate percentage (#34).
+        """
+        assert extract_amounts("$17,40022% of adjusted available income") == (17400,)
+        assert extract_amounts("$140,00040% of net worth") == (140000,)
+
+    def test_amount_without_commas(self):
+        """Amounts written without thousands separators are still captured whole."""
+        assert extract_amounts("an appropriation of $5000000 for the program") == (5000000,)
+        assert extract_amounts("a fee of $500 applies") == (500,)
+
 
 class TestComputeFinancialChange:
     def test_amounts_changed(self):
