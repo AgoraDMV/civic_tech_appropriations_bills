@@ -25,17 +25,34 @@ what each layer does and does not establish.
 
 ### 1. Checking the numbers against an outside source
 
-This is the strongest check. We took a separately maintained appropriations
-spreadsheet for Legislative Branch bills, covering both the House and Senate
-across several years, and confirmed that the dollar amounts our tool pulls out
-of the official bill text match the amounts in that spreadsheet. Because the
-spreadsheet was built independently, this catches mistakes that checking the
-tool against itself never could.
+This is the strongest check, and it now covers two jurisdictions through two
+independent sources:
 
-**Limit:** this only covers the Legislative Branch, which is one of the twelve
-areas (subcommittee jurisdictions) that appropriations bills are divided into.
-The other eleven have not been checked against an outside source. This is the
-biggest known gap, and we track it on purpose.
+- **Legislative Branch.** We took a separately maintained appropriations
+  spreadsheet for Legislative Branch bills, covering both the House and Senate
+  across several years, and confirmed that the dollar amounts our tool pulls out
+  of the official bill text match the amounts in that spreadsheet, in the right
+  place in the bill's structure.
+- **Commerce-Justice-Science.** We read the account-level amounts out of the
+  Senate committee report for the CJS bill (S.4795) and confirmed that each
+  amount the committee recommended appears in what our tool extracts from the
+  bill. The committee report is written by different people for a different
+  purpose than the bill, so it is a genuinely outside source.
+
+Because both sources were built independently of our tool, this catches mistakes
+that checking the tool against itself never could. The CJS check did not surface
+any extraction errors; the only mismatches were two figures the committee report
+itself states differently from the bill (one is a mandatory account with no
+fixed-dollar line, the other a copy-paste slip in the report's narrative that its
+own summary table contradicts).
+
+**Limit:** the two jurisdictions are checked to different depths. Legislative
+Branch is checked structurally (right amount, right place) across several bills
+and both chambers. CJS is checked as amount-recall (the right amounts are
+present) on a single Senate-reported bill, because the report and the bill name
+accounts differently. Either way, ten of the twelve subcommittee jurisdictions
+still have no outside-source check. This remains the biggest known gap, and we
+track it on purpose.
 
 ### 2. Sanity checks across every bill we have
 
