@@ -13,4 +13,6 @@ plans/
 test_data/*
 !test_data/validation_*.json
 !test_data/pdf/
+# Persistent PDF extraction cache (developer test-loop speedup; see tests/pdf_corpus.py)
+test_data/extract_cache/
 *.csv
