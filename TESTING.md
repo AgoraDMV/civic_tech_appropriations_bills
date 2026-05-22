@@ -28,11 +28,11 @@ what each layer does and does not establish.
 This is the strongest check, and it now covers two jurisdictions through two
 independent sources:
 
-- **Legislative Branch.** We took a separately maintained appropriations
-  spreadsheet for Legislative Branch bills, covering both the House and Senate
-  across several years, and confirmed that the dollar amounts our tool pulls out
-  of the official bill text match the amounts in that spreadsheet, in the right
-  place in the bill's structure.
+- **Legislative Branch appropriations.** We took a separately maintained
+  appropriations spreadsheet for Legislative Branch bills, covering both the
+  House and Senate across several years, and confirmed that the dollar amounts
+  our tool pulls out of the official bill text match the amounts in that
+  spreadsheet, in the right place in the bill's structure.
 - **Commerce-Justice-Science.** We read the account-level amounts out of the
   Senate committee report for the CJS bill (S.4795) and confirmed that each
   amount the committee recommended appears in what our tool extracts from the
@@ -47,11 +47,12 @@ fixed-dollar line, the other a copy-paste slip in the report's narrative that it
 own summary table contradicts).
 
 **Limit:** the two jurisdictions are checked to different depths. Legislative
-Branch is checked structurally (right amount, right place) across several bills
-and both chambers. CJS is checked as amount-recall (the right amounts are
-present) on a single Senate-reported bill, because the report and the bill name
-accounts differently. Either way, ten of the twelve subcommittee jurisdictions
-still have no outside-source check. This remains the biggest known gap, and we
+Branch appropriations is checked structurally (right amount, right place) across
+several bills and both chambers. CJS is checked as amount-recall (the right
+amounts are present) on a single Senate-reported bill, because the report and
+the bill name accounts differently. Either way, ten of the twelve subcommittee
+jurisdictions still have no outside-source check. This remains the biggest known
+gap, and we
 track it on purpose.
 
 ### 2. Sanity checks across every bill we have
@@ -111,11 +112,11 @@ sensible type.
 **Limit:** this confirms our PDF reader and our official-text reader *agree* on
 the numbers, which catches reading mistakes. Agreement between our own two
 readers is not the same as an outside source confirming the numbers are correct
-— that is check 1, and only for the Legislative Branch. (This cross-check also
-surfaced one quirk in the official-text reader, where it can merge a dollar
-figure with an adjacent percentage in non-spending statutory tables; that is
-logged and set aside until fixed.) The soundness pass covers every bill,
-including the record-setting ~5,600-page omnibus.
+— that is check 1, and only for Legislative Branch appropriations. (This
+cross-check earlier surfaced a quirk in the official-text reader, where it
+merged a dollar figure with an adjacent percentage in non-spending statutory
+tables; that has since been fixed.) The soundness pass covers every bill,
+including the largest omnibus in the collection.
 
 ## Known soft spots
 
@@ -129,8 +130,8 @@ We keep these in the open rather than papering over them:
 - **Large combined bills.** In omnibus bills that bundle many areas together,
   section numbers repeat across areas, which makes matching harder. The tool
   handles this, but it is the trickiest case.
-- **Coverage outside the Legislative Branch.** As noted in check 1, the
-  outside-source comparison covers only one of the twelve areas.
+- **Narrow outside-source coverage.** As noted in check 1, most of the twelve
+  subcommittee areas still have no outside-source check.
 
 ## Running the tests
 
