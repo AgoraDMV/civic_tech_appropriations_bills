@@ -123,13 +123,27 @@ def _is_bureau_header(line: str) -> bool:
     """
     indent = len(line) - len(line.lstrip())
     s = line.strip()
-    if indent < 8 or not s or "...." in s or _is_qualifier(s):
+    if indent < 4 or not s or "...." in s or _is_qualifier(s):
         return False
     if not (s[0].isupper() and any(c.islower() for c in s)):
         return False
     if _TABLE_HEADER_RE.search(s) or any(c.isdigit() for c in s):
         return False  # embedded table header / data row, not a bureau name
-    return len(s.split()) <= 8 and not s.endswith((".", ":", ";", ","))
+    if re.search(r"\.\s*[-—–]", s):
+        return False  # GPO run-in directive heading ("Topic.--The Committee ...")
+    if len(s.split()) > 12 or s.endswith((".", ":", ";", ",")):
+        return False
+    # Title case (every content word capitalized) separates a bureau name from a sentence
+    # of narrative prose, which long bureau names share the light indentation of.
+    return _is_title_case(s)
+
+
+_BUREAU_FUNCTION_WORDS = {"of", "and", "the", "for", "to", "in", "a", "an", "on", "at", "by", "or", "with"}
+
+
+def _is_title_case(s: str) -> bool:
+    content = [w for w in re.findall(r"[A-Za-z']+", s) if w.lower() not in _BUREAU_FUNCTION_WORDS]
+    return bool(content) and all(w[0].isupper() for w in content)
 
 
 def _title_name_after(lines: list[str], idx: int) -> str | None:

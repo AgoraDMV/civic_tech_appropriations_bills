@@ -23,13 +23,9 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "AGRICULTURAL PROGRAMS",
-      "bureau": "Agricultural Research Service",
+      "bureau": "Unmanned Aerial Systems [UAS] Precision Agriculture",
       "excel_name": "BUILDINGS AND FACILITIES",
-      "match_path": [
-        "agricultural programs",
-        "agricultural research service",
-        "buildings and facilities"
-      ],
+      "match_path": null,
       "expected_amount": 47663000
     },
     {
@@ -53,7 +49,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "AGRICULTURAL PROGRAMS",
-      "bureau": "Committee",
+      "bureau": "Education Grants for Alaska Native and Native Hawaiian-",
       "excel_name": "NATIVE AMERICAN INSTITUTIONS ENDOWMENT FUND",
       "match_path": [
         "agricultural programs",
@@ -68,7 +64,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "AGRICULTURAL PROGRAMS",
-      "bureau": "Committee",
+      "bureau": "Education Grants for Alaska Native and Native Hawaiian-",
       "excel_name": "EXTENSION ACTIVITIES",
       "match_path": [
         "agricultural programs",
@@ -289,7 +285,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "FARM PRODUCTION AND CONSERVATION PROGRAMS",
-      "bureau": "Natural Resources Conservation Service",
+      "bureau": "The Watershed Protection and Flood Prevention Act (Public",
       "excel_name": "WATERSHED REHABILITATION PROGRAM",
       "match_path": [
         "farm production and conservation programs",
@@ -409,7 +405,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RURAL DEVELOPMENT PROGRAMS",
-      "bureau": "Rural Business-Cooperative Service",
+      "bureau": "Higher Blends Infrastructure Incentives Program [HBIIP]",
       "excel_name": "RURAL COOPERATIVE DEVELOPMENT GRANTS",
       "match_path": [
         "rural development programs",
@@ -424,7 +420,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RURAL DEVELOPMENT PROGRAMS",
-      "bureau": "Rural Business-Cooperative Service",
+      "bureau": "The Appropriate Technology Transfer for Rural Areas [ATTRA]",
       "excel_name": "RURAL MICROENTREPRENEUR ASSISTANCE PROGRAM",
       "match_path": [
         "rural development programs",
@@ -439,7 +435,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RURAL DEVELOPMENT PROGRAMS",
-      "bureau": "Estimated loan",
+      "bureau": "The Appropriate Technology Transfer for Rural Areas [ATTRA]",
       "excel_name": "HEALTHY FOOD FINANCING INITIATIVE",
       "match_path": [
         "rural development programs",
@@ -574,7 +570,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "FOREIGN ASSISTANCE AND RELATED PROGRAMS",
-      "bureau": null,
+      "bureau": "Market Access Program [MAP] and Foreign Market Development",
       "excel_name": "OFFICE OF CODEX ALIMENTARIUS",
       "match_path": [
         "foreign assistance and related programs",
@@ -589,7 +585,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "FOREIGN ASSISTANCE AND RELATED PROGRAMS",
-      "bureau": "Transfers from",
+      "bureau": "Foreign Agricultural Service",
       "excel_name": "FOOD FOR PEACE TITLE II GRANTS",
       "match_path": [
         "foreign assistance and related programs",
@@ -604,7 +600,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "FOREIGN ASSISTANCE AND RELATED PROGRAMS",
-      "bureau": "Transfers from",
+      "bureau": "Commodities Supplied in Connection with Dispositions Abroad",
       "excel_name": "PROGRAM GRANTS",
       "match_path": [
         "foreign assistance and related programs",
@@ -619,7 +615,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCY AND FOOD AND DRUG ADMINISTRATION",
-      "bureau": "Department of Health and Human Services",
+      "bureau": "Limited Population Pathway for Antibacterial and Antifungal",
       "excel_name": "BUILDINGS AND FACILITIES",
       "match_path": [
         "related agencies and food and drug administration",
@@ -634,7 +630,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCY AND FOOD AND DRUG ADMINISTRATION",
-      "bureau": "Department of Health and Human Services",
+      "bureau": "Limited Population Pathway for Antibacterial and Antifungal",
       "excel_name": "FDA INNOVATION ACCOUNT, CURES ACT",
       "match_path": [
         "related agencies and food and drug administration",
@@ -649,7 +645,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCY AND FOOD AND DRUG ADMINISTRATION",
-      "bureau": "Department of Health and Human Services",
+      "bureau": "Limited Population Pathway for Antibacterial and Antifungal",
       "excel_name": "FARM CREDIT ADMINISTRATION",
       "match_path": null,
       "expected_amount": 100430000

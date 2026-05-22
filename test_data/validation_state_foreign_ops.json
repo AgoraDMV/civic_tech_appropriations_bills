@@ -24,7 +24,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Standing Committee of Parliamentarians of the Arctic",
       "excel_name": "CAPITAL INVESTMENT FUND",
       "match_path": [
         "department of state and related agency",
@@ -40,12 +40,11 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Standing Committee of Parliamentarians of the Arctic",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "match_path": [
-        "department of state and related agency",
-        "department of state",
-        "administration of foreign affairs",
+        "united states agency for international development",
+        "funds appropriated to the president",
         "office of inspector general"
       ],
       "expected_amount": 127838000
@@ -56,7 +55,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Standing Committee of Parliamentarians of the Arctic",
       "excel_name": "EDUCATIONAL AND CULTURAL EXCHANGE PROGRAMS",
       "match_path": [
         "department of state and related agency",
@@ -72,7 +71,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Increase and Diversify Education Abroad for U.S. Students",
       "excel_name": "REPRESENTATION EXPENSES",
       "match_path": [
         "department of state and related agency",
@@ -88,7 +87,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Increase and Diversify Education Abroad for U.S. Students",
       "excel_name": "PROTECTION OF FOREIGN MISSIONS AND OFFICIALS",
       "match_path": [
         "department of state and related agency",
@@ -104,7 +103,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Increase and Diversify Education Abroad for U.S. Students",
       "excel_name": "EMBASSY SECURITY, CONSTRUCTION, AND MAINTENANCE",
       "match_path": [
         "department of state and related agency",
@@ -120,7 +119,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Capital Security Cost Sharing and Maintenance Cost Sharing",
       "excel_name": "EMERGENCIES IN THE DIPLOMATIC AND CONSULAR SERVICE",
       "match_path": [
         "department of state and related agency",
@@ -136,7 +135,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Capital Security Cost Sharing and Maintenance Cost Sharing",
       "excel_name": "REPATRIATION LOANS PROGRAM ACCOUNT",
       "match_path": [
         "department of state and related agency",
@@ -152,7 +151,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Capital Security Cost Sharing and Maintenance Cost Sharing",
       "excel_name": "PAYMENT TO THE AMERICAN INSTITUTE IN TAIWAN",
       "match_path": [
         "department of state and related agency",
@@ -168,7 +167,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Capital Security Cost Sharing and Maintenance Cost Sharing",
       "excel_name": "INTERNATIONAL CENTER, WASHINGTON, DISTRICT OF COLUMBIA",
       "match_path": [
         "department of state and related agency",
@@ -184,7 +183,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "Committee",
+      "bureau": "Capital Security Cost Sharing and Maintenance Cost Sharing",
       "excel_name": "PAYMENT TO THE FOREIGN SERVICE RETIREMENT AND DISABILITY FUND",
       "match_path": [
         "department of state and related agency",
@@ -323,7 +322,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "National Endowment for Democracy",
+      "bureau": "Commission for the Preservation of America's Heritage Abroad",
       "excel_name": "SALARIES AND EXPENSES",
       "match_path": [
         "department of state and related agency",
@@ -339,12 +338,12 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF STATE AND RELATED AGENCY",
-      "bureau": "National Endowment for Democracy",
+      "bureau": "United States Commission on International Religious Freedom",
       "excel_name": "SALARIES AND EXPENSES",
       "match_path": [
         "department of state and related agency",
         "other commissions",
-        "commission for the preservation of america\u2019s heritage abroad",
+        "united states commission on international religious freedom",
         "salaries and expenses"
       ],
       "expected_amount": 4000000
@@ -478,7 +477,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "USAID Middle East Regional",
       "excel_name": "INTERNATIONAL DISASTER ASSISTANCE",
       "match_path": [
         "bilateral economic assistance",
@@ -493,7 +492,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "USAID Middle East Regional",
       "excel_name": "TRANSITION INITIATIVES",
       "match_path": [
         "bilateral economic assistance",
@@ -508,7 +507,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "USAID Middle East Regional",
       "excel_name": "COMPLEX CRISES FUND",
       "match_path": [
         "bilateral economic assistance",
@@ -523,7 +522,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "USAID Middle East Regional",
       "excel_name": "ECONOMIC SUPPORT FUND",
       "match_path": [
         "bilateral economic assistance",
@@ -538,7 +537,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Colombia",
       "excel_name": "DEMOCRACY FUND",
       "match_path": [
         "bilateral economic assistance",
@@ -553,7 +552,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Colombia",
       "excel_name": "ASSISTANCE FOR EUROPE, EURASIA AND CENTRAL ASIA",
       "match_path": [
         "bilateral economic assistance",
@@ -583,7 +582,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Department of State",
+      "bureau": "Transparency in Migration and Refugee Assistance",
       "excel_name": "UNITED STATES EMERGENCY REFUGEE AND MIGRATION ASSISTANCE FUND",
       "match_path": [
         "bilateral economic assistance",
@@ -598,7 +597,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Department of State",
+      "bureau": "Transparency in Migration and Refugee Assistance",
       "excel_name": "PEACE CORPS",
       "match_path": [
         "bilateral economic assistance",
@@ -613,7 +612,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Department of State",
+      "bureau": "Transparency in Migration and Refugee Assistance",
       "excel_name": "MILLENNIUM CHALLENGE CORPORATION",
       "match_path": [
         "bilateral economic assistance",
@@ -628,7 +627,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Department of State",
+      "bureau": "Transparency in Migration and Refugee Assistance",
       "excel_name": "INTER-AMERICAN FOUNDATION",
       "match_path": [
         "bilateral economic assistance",
@@ -643,7 +642,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "BILATERAL ECONOMIC ASSISTANCE",
-      "bureau": "Department of State",
+      "bureau": "Transparency in Migration and Refugee Assistance",
       "excel_name": "UNITED STATES AFRICAN DEVELOPMENT FOUNDATION",
       "match_path": [
         "bilateral economic assistance",
@@ -718,7 +717,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "INTERNATIONAL SECURITY ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Rule of Law, Anti-Corruption, and Counter Russian Influence",
       "excel_name": "NONPROLIFERATION, ANTI-TERRORISM, DEMINING AND RELATED PROGRAMS",
       "match_path": [
         "international security assistance",
@@ -793,7 +792,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "GLOBAL ENVIRONMENT FACILITY",
       "match_path": [
         "multilateral assistance",
@@ -808,7 +807,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE CLEAN TECHNOLOGY FUND",
       "match_path": [
         "multilateral assistance",
@@ -823,7 +822,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "DEVELOPMENT",
       "match_path": null,
       "expected_amount": 206500000
@@ -834,7 +833,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE INTERNATIONAL DEVELOPMENT ASSOCIATION",
       "match_path": [
         "multilateral assistance",
@@ -849,7 +848,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE ASIAN DEVELOPMENT FUND",
       "match_path": [
         "multilateral assistance",
@@ -864,7 +863,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE AFRICAN DEVELOPMENT BANK",
       "match_path": [
         "multilateral assistance",
@@ -879,7 +878,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE AFRICAN DEVELOPMENT FUND",
       "match_path": [
         "multilateral assistance",
@@ -894,7 +893,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE INTER-AMERICAN DEVELOPMENT BANK",
       "match_path": [
         "multilateral assistance",
@@ -909,7 +908,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE EUROPEAN BANK FOR RECONSTRUCTION AND DEVELOPMENT",
       "match_path": [
         "multilateral assistance",
@@ -924,7 +923,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "CONTRIBUTION TO THE INTERNATIONAL FUND FOR AGRICULTURAL DEVELOPMENT",
       "match_path": [
         "multilateral assistance",
@@ -939,7 +938,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "GLOBAL AGRICULTURE AND FOOD SECURITY PROGRAM",
       "match_path": [
         "multilateral assistance",
@@ -954,7 +953,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "MULTILATERAL ASSISTANCE",
-      "bureau": "Committee",
+      "bureau": "Office of the United Nations High Commissioner for Human",
       "excel_name": "TREASURY INTERNATIONAL ASSISTANCE PROGRAMS",
       "match_path": [
         "multilateral assistance",
@@ -1014,11 +1013,11 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "EXPORT AND INVESTMENT ASSISTANCE",
-      "bureau": "Export-Import Bank of the United States",
+      "bureau": "United States International Development Finance Corporation",
       "excel_name": "INSPECTOR GENERAL",
       "match_path": [
         "export and investment assistance",
-        "export-import bank of the united states",
+        "united states international development finance corporation",
         "inspector general"
       ],
       "expected_amount": 8000000

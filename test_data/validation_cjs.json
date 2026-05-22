@@ -53,7 +53,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "Committee",
+      "bureau": "Native American Tourism and Improving Visitor Experience",
       "excel_name": "SALARIES AND EXPENSES",
       "match_path": null,
       "expected_amount": 73000000
@@ -120,9 +120,13 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "Bureau of the Census",
+      "bureau": "National Telecommunications and Information Administration",
       "excel_name": "SALARIES AND EXPENSES",
-      "match_path": null,
+      "match_path": [
+        "department of commerce",
+        "national telecommunications and information administration",
+        "salaries and expenses"
+      ],
       "expected_amount": 59650000
     },
     {
@@ -131,7 +135,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "Bureau of the Census",
+      "bureau": "FirstNet Authority's Lack of Contract Oversight for Device",
       "excel_name": "FACILITIES MANAGEMENT AND CONSTRUCTION",
       "match_path": [
         "department of commerce",
@@ -176,7 +180,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "National Institute of Standards and Technology",
+      "bureau": "NIST Center of Excellence and Full-Scale Testing Center for",
       "excel_name": "INDUSTRIAL TECHNOLOGY SERVICES",
       "match_path": [
         "department of commerce",
@@ -191,7 +195,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "National Institute of Standards and Technology",
+      "bureau": "Hollings Manufacturing Extension Partnership Program",
       "excel_name": "CONSTRUCTION OF RESEARCH FACILITIES",
       "match_path": [
         "department of commerce",
@@ -292,7 +296,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "Departmental Management",
+      "bureau": "Enhancing Microelectronics Fabrication with Advanced",
       "excel_name": "RENOVATION AND MODERNIZATION",
       "match_path": [
         "department of commerce",
@@ -307,7 +311,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF COMMERCE",
-      "bureau": "Departmental Management",
+      "bureau": "Enhancing Microelectronics Fabrication with Advanced",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "match_path": [
         "department of commerce",
@@ -322,7 +326,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": null,
+      "bureau": "Human Trafficking and Child Exploitation Interagency",
       "excel_name": "SALARIES AND EXPENSES",
       "match_path": null,
       "expected_amount": 145000000
@@ -333,7 +337,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": null,
+      "bureau": "Timely Responses to Committee Inquiries and Meeting Report",
       "excel_name": "JUSTICE INFORMATION SHARING TECHNOLOGY",
       "match_path": [
         "department of justice",
@@ -348,7 +352,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": null,
+      "bureau": "Timely Responses to Committee Inquiries and Meeting Report",
       "excel_name": "EXECUTIVE OFFICE FOR IMMIGRATION REVIEW",
       "match_path": [
         "department of justice",
@@ -392,7 +396,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "THE NATIONAL CHILDHOOD VACCINE INJURY ACT",
       "match_path": null,
       "expected_amount": 22700000
@@ -403,7 +407,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "SALARIES AND EXPENSES, ANTITRUST DIVISION",
       "match_path": [
         "department of justice",
@@ -418,9 +422,13 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "SALARIES AND EXPENSES",
-      "match_path": null,
+      "match_path": [
+        "related agencies",
+        "commission on civil rights",
+        "salaries and expenses"
+      ],
       "expected_amount": 2664000000
     },
     {
@@ -429,7 +437,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "UNITED STATES TRUSTEE SYSTEM FUND",
       "match_path": [
         "department of justice",
@@ -444,7 +452,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "SALARIES AND EXPENSES, FOREIGN CLAIMS SETTLEMENT COMMISSION",
       "match_path": [
         "department of justice",
@@ -459,7 +467,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "FEES AND EXPENSES OF WITNESSES",
       "match_path": [
         "department of justice",
@@ -474,7 +482,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "SALARIES AND EXPENSES, COMMUNITY RELATIONS SERVICE",
       "match_path": [
         "department of justice",
@@ -489,7 +497,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Legal Activities",
+      "bureau": "Civil Rights Violations in State and Local Prisons and",
       "excel_name": "ASSETS FORFEITURE FUND",
       "match_path": [
         "department of justice",
@@ -519,13 +527,9 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "United States Marshals Service",
+      "bureau": "Leveraging Artificial Intelligence to Generate Actionable",
       "excel_name": "CONSTRUCTION",
-      "match_path": [
-        "department of justice",
-        "united states marshals service",
-        "construction"
-      ],
+      "match_path": null,
       "expected_amount": 18000000
     },
     {
@@ -534,7 +538,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "United States Marshals Service",
+      "bureau": "Leveraging Artificial Intelligence to Generate Actionable",
       "excel_name": "FEDERAL PRISONER DETENTION",
       "match_path": [
         "department of justice",
@@ -579,13 +583,9 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Federal Bureau of Investigation",
+      "bureau": "Terrorist Explosive Device Analytical Center [TEDAC] and",
       "excel_name": "CONSTRUCTION",
-      "match_path": [
-        "department of justice",
-        "federal bureau of investigation",
-        "construction"
-      ],
+      "match_path": null,
       "expected_amount": 211895000
     },
     {
@@ -639,7 +639,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Federal Prison System",
+      "bureau": "Strengthening Collaboration to Ensure Effective Treatment",
       "excel_name": "BUILDINGS AND FACILITIES",
       "match_path": [
         "department of justice",
@@ -654,7 +654,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Federal Prison System",
+      "bureau": "Strengthening Collaboration to Ensure Effective Treatment",
       "excel_name": "FEDERAL PRISON INDUSTRIES, INCORPORATED",
       "match_path": [
         "department of justice",
@@ -714,7 +714,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF JUSTICE",
-      "bureau": "Committee",
+      "bureau": "Community Violence Intervention and Prevention Initiative",
       "excel_name": "JUVENILE JUSTICE PROGRAMS",
       "match_path": [
         "department of justice",
@@ -755,9 +755,13 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "For Exploration and Space Operations, the Committee's",
       "excel_name": "SCIENCE",
-      "match_path": null,
+      "match_path": [
+        "science",
+        "national aeronautics and space administration",
+        "science, technology, engineering, and mathematics engagement"
+      ],
       "expected_amount": 7575700000
     },
     {
@@ -766,7 +770,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Geosynchronous Littoral Imaging and Monitoring Radiometer",
       "excel_name": "AERONAUTICS",
       "match_path": [
         "science",
@@ -781,7 +785,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Geosynchronous Littoral Imaging and Monitoring Radiometer",
       "excel_name": "SPACE TECHNOLOGY",
       "match_path": [
         "science",
@@ -796,7 +800,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Geosynchronous Littoral Imaging and Monitoring Radiometer",
       "excel_name": "EXPLORATION",
       "match_path": [
         "science",
@@ -811,7 +815,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Geosynchronous Littoral Imaging and Monitoring Radiometer",
       "excel_name": "SPACE OPERATIONS",
       "match_path": [
         "science",
@@ -826,7 +830,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Rocket Propulsion Test Program and Testing",
       "excel_name": "SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS ENGAGEMENT",
       "match_path": [
         "science",
@@ -841,7 +845,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Minority University Research and Education Project",
       "excel_name": "SAFETY, SECURITY, AND MISSION SERVICES",
       "match_path": [
         "science",
@@ -856,7 +860,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Minority University Research and Education Project",
       "excel_name": "CONSTRUCTION AND ENVIRONMENTAL COMPLIANCE AND RESTORATION",
       "match_path": [
         "science",
@@ -871,9 +875,13 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "Committee",
+      "bureau": "Minority University Research and Education Project",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
-      "match_path": null,
+      "match_path": [
+        "science",
+        "national aeronautics and space administration",
+        "office of inspector general"
+      ],
       "expected_amount": 50500000
     },
     {
@@ -897,7 +905,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "National Science Foundation",
+      "bureau": "National Center for Science and Engineering Statistics",
       "excel_name": "MAJOR RESEARCH EQUIPMENT AND FACILITIES CONSTRUCTION",
       "match_path": [
         "science",
@@ -912,7 +920,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "National Science Foundation",
+      "bureau": "National Center for Science and Engineering Statistics",
       "excel_name": "STEM EDUCATION",
       "match_path": [
         "science",
@@ -927,7 +935,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "National Science Foundation",
+      "bureau": "Diversity in Microelectronics and Semiconductors Research",
       "excel_name": "AGENCY OPERATIONS AND AWARD MANAGEMENT",
       "match_path": [
         "science",
@@ -942,7 +950,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "National Science Foundation",
+      "bureau": "Diversity in Microelectronics and Semiconductors Research",
       "excel_name": "OFFICE OF THE NATIONAL SCIENCE BOARD",
       "match_path": [
         "science",
@@ -957,11 +965,11 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "SCIENCE",
-      "bureau": "National Science Foundation",
+      "bureau": "Diversity in Microelectronics and Semiconductors Research",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "match_path": [
         "science",
-        "national science foundation",
+        "national aeronautics and space administration",
         "office of inspector general"
       ],
       "expected_amount": 26500000

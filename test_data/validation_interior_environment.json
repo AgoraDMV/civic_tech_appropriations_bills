@@ -98,9 +98,13 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "CONSTRUCTION",
-      "match_path": null,
+      "match_path": [
+        "department of the interior",
+        "united states fish and wildlife service",
+        "construction"
+      ],
       "expected_amount": 27049000
     },
     {
@@ -109,7 +113,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "COOPERATIVE ENDANGERED SPECIES CONSERVATION FUND",
       "match_path": [
         "department of the interior",
@@ -124,7 +128,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "NATIONAL WILDLIFE REFUGE FUND",
       "match_path": [
         "department of the interior",
@@ -139,7 +143,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "NORTH AMERICAN WETLANDS CONSERVATION FUND",
       "match_path": [
         "department of the interior",
@@ -154,7 +158,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "NEOTROPICAL MIGRATORY BIRD CONSERVATION FUND",
       "match_path": [
         "department of the interior",
@@ -169,7 +173,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "MULTINATIONAL SPECIES CONSERVATION FUND",
       "match_path": [
         "department of the interior",
@@ -184,7 +188,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Service to collaborate with academic research",
+      "bureau": "Prioritization of Combatting Invasive Plant and Animal",
       "excel_name": "STATE AND TRIBAL WILDLIFE GRANTS",
       "match_path": [
         "department of the interior",
@@ -214,7 +218,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "National Park Service",
+      "bureau": "Honouliuli National Historic Site and Pearl Harbor National",
       "excel_name": "NATIONAL RECREATION AND PRESERVATION",
       "match_path": [
         "department of the interior",
@@ -229,7 +233,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "National Park Service",
+      "bureau": "Native American Graves Protection and Repatriation Act",
       "excel_name": "HISTORIC PRESERVATION FUND",
       "match_path": [
         "department of the interior",
@@ -244,11 +248,11 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "National Park Service",
+      "bureau": "Native American Graves Protection and Repatriation Act",
       "excel_name": "CONSTRUCTION",
       "match_path": [
         "department of the interior",
-        "national park service",
+        "united states fish and wildlife service",
         "construction"
       ],
       "expected_amount": 202283000
@@ -259,7 +263,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "National Park Service",
+      "bureau": "Native American Graves Protection and Repatriation Act",
       "excel_name": "CENTENNIAL CHALLENGE",
       "match_path": [
         "department of the interior",
@@ -300,7 +304,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Bureau of Safety and Environmental Enforcement",
+      "bureau": "The Bureau of Safety and Environmental Enforcement [Bureau",
       "excel_name": "OFFSHORE SAFETY AND ENVIRONMENTAL ENFORCEMENT",
       "match_path": [
         "department of the interior",
@@ -315,7 +319,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Bureau of Safety and Environmental Enforcement",
+      "bureau": "The Bureau of Safety and Environmental Enforcement [Bureau",
       "excel_name": "OIL SPILL RESEARCH",
       "match_path": [
         "department of the interior",
@@ -330,7 +334,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Office of Surface Mining Reclamation and Enforcement",
+      "bureau": "The Office of Surface Mining Reclamation and Enforcement",
       "excel_name": "REGULATION AND TECHNOLOGY",
       "match_path": [
         "department of the interior",
@@ -345,7 +349,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Office of Surface Mining Reclamation and Enforcement",
+      "bureau": "The Office of Surface Mining Reclamation and Enforcement",
       "excel_name": "ABANDONED MINE RECLAMATION FUND",
       "match_path": [
         "department of the interior",
@@ -450,7 +454,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "DEPARTMENT OF THE INTERIOR",
-      "bureau": "Operation of Indian Education Programs",
+      "bureau": "FERS Eligibility for Employees at BIE Tribally Controlled",
       "excel_name": "EDUCATION CONSTRUCTION",
       "match_path": [
         "department of the interior",
@@ -657,7 +661,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "STATE, PRIVATE, AND TRIBAL FORESTRY",
       "match_path": [
         "related agencies",
@@ -673,7 +677,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "NATIONAL FOREST SYSTEM",
       "match_path": [
         "related agencies",
@@ -689,7 +693,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "CAPITAL IMPROVEMENT AND MAINTENANCE",
       "match_path": [
         "related agencies",
@@ -705,7 +709,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "ACQUISITION OF LANDS FOR NATIONAL FORESTS, SPECIAL ACTS",
       "match_path": [
         "related agencies",
@@ -721,7 +725,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "ACQUISITION OF LANDS TO COMPLETE LAND EXCHANGES",
       "match_path": [
         "related agencies",
@@ -737,7 +741,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "RANGE BETTERMENT FUND",
       "match_path": [
         "related agencies",
@@ -753,7 +757,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "GIFTS, DONATIONS AND BEQUESTS FOR FOREST AND RANGELAND RESEARCH",
       "match_path": [
         "related agencies",
@@ -769,7 +773,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "MANAGEMENT OF NATIONAL FOREST LANDS FOR SUBSISTENCE USES",
       "match_path": [
         "related agencies",
@@ -785,7 +789,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Research Consortium to advance digital forest",
+      "bureau": "Forest Service",
       "excel_name": "WILDFIRE SUPPRESSION OPERATIONS RESERVE FUND",
       "match_path": [
         "related agencies",
@@ -833,7 +837,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Agency for Toxic Substances and Disease Registry",
+      "bureau": "The Agency for Toxic Substances and Disease Registry",
       "excel_name": "TOXIC SUBSTANCES AND ENVIRONMENTAL PUBLIC HEALTH",
       "match_path": [
         "related agencies",
@@ -881,7 +885,7 @@
       "fy": "FY 2025",
       "chamber": "senate",
       "title": "RELATED AGENCIES",
-      "bureau": "Development",
+      "bureau": "The Institute of American Indian and Alaska Native Culture",
       "excel_name": "PAYMENT TO THE INSTITUTE",
       "match_path": [
         "related agencies",
