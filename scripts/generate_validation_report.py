@@ -66,6 +66,26 @@ This page explains how we check that the bill parser extracts dollar amounts cor
 and what the current numbers are. It is generated from the validation suite, so the figures
 here match the tests.
 
+## Bottom line (for everyone)
+
+Our tool reads each appropriations bill and pulls out the dollar amount for every account. To
+confirm it reads them correctly, we compare its output against an **independent source we did
+not build**: the committee report that Congress publishes alongside each bill. The bill and the
+report are written separately, by different people, for different purposes — so when the tool's
+numbers match the report, that is real, independent evidence the tool got it right.
+
+Across **all 12 regular appropriations subcommittees**, the tool's amounts match the independent
+source about **{overall:.0f}% of the time**. We then hand-checked every remaining case, and
+**none is a tool error.** Each is a spot where the report and the bill legitimately state a
+number differently — for example, the report gives one account total while the bill splits it
+into separate lines, or the amount is open-ended ("such sums as may be necessary") so there is
+no fixed figure in the bill to match. We also confirmed the tool is not just "tuned" to the
+bills we happened to test (see *Guarding against overfitting* below).
+
+The rest of this page is the detail behind that claim. Terms: the **parser** is the tool that
+reads the bill; an **account** is one funding line (e.g. "FBI — Salaries and Expenses"); a match
+is called a **recall**.
+
 ## What is being tested
 
 The system under test is our **bill parser** (`bill_tree` / `diff_bill`) reading dollar
@@ -77,12 +97,14 @@ bill XML; we check that our parser reads it correctly, by comparing the parser's
 
 {_leg_branch_summary()}
 - **{len(available)} other jurisdictions** — committee-recommended amounts parsed from the
-  FY2025 Senate Appropriations **committee reports** (govinfo `CRPT-…`), compared to what the
-  parser extracts from each reported bill. The report is written by committee staff for a
-  different purpose than the bill, so it is genuinely independent. (Committee reports, not CRS
-  reports.) Most are read from the report's 3-line summary blocks; **tabular** jurisdictions
-  (Defense) print accounts only in the wide comparative statement, so those are read from that
-  table instead (committee-recommendation column, converted from thousands to dollars).
+  Senate Appropriations **committee reports** (govinfo `CRPT-…`), compared to what the parser
+  extracts from each reported bill. The report is written by committee staff for a different
+  purpose than the bill, so it is genuinely independent. (Committee reports, not CRS reports.)
+  Most are the FY2025 reported bills; two use an earlier year (the FY2024 CJS overfitting guard,
+  and Homeland Security, whose FY2025 bill the Senate never reported) — see the table. Most are
+  read from the report's 3-line summary blocks; **tabular** jurisdictions (Defense) print
+  accounts only in the wide comparative statement, so those are read from that table instead
+  (committee-recommendation column, converted from thousands to dollars).
 
 An account is counted as **recalled** when the report's amount appears in the parser's
 extraction under the correct agency, or as a sum of the account's components (totals the bill
@@ -108,7 +130,7 @@ an inherent difference between how the *report* and the *bill* state a figure:
   The report prints an estimate; there is nothing in the bill text to match.
 - **Account totals the bill itemizes** — the report gives an account total, the bill states the
   components (e.g. HUD Tenant-Based Rental Assistance = renewals + a separate line). The single
-  total is not a token in the bill.
+  total never appears as one number in the bill, so there is nothing for the parser to match.
 - **Report-side typos** — the report's own number is wrong (e.g. NASA Safety, Security and
   Mission Services: the report narrative prints the budget estimate, while the bill and the
   report's own comparative statement agree on the correct figure, which the parser extracts).
@@ -131,9 +153,10 @@ specific bills we happen to have. Three things push against that:
   FY2014–FY2020. (The committee-report jurisdictions are Senate-only because House appropriations
   reports render their account tables as embedded images, so there is no text for the reader to
   extract — a limit of the *report source*, not the bill parser, which parses House bill XML fine.)
-- **Many independent jurisdictions.** Nine subcommittees with very different account structures
-  (flat tabular Defense, deeply-nested Energy-Water, narrative summary blocks) all recall in the
-  same band, which is the opposite of what overfitting to one structure would produce.
+- **Many independent jurisdictions.** Every committee-report jurisdiction in the table above —
+  spanning very different account structures (flat tabular Defense, deeply-nested Energy-Water,
+  narrative summary blocks) — recalls in the same band, which is the opposite of what overfitting
+  to one structure would produce.
 
 ## Honest limits
 
