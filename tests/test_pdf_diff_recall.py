@@ -13,10 +13,22 @@ with one-line rationale before declaring done.
 
 from __future__ import annotations
 
+import re
+
 import pytest
 from pdf_test_cases import PdfTestCase, load_cases
+from recall_text import normalize_for_recall
 
 from diff_pdf import PdfDiff, PdfHunk
+
+# Floor-amendment annotations ("(reduced by $3,000,000)") are financial metadata
+# covered by the amount-recall tests, and extraction may reorder a long chain of
+# them — so they're stripped before the prose comparison below.
+_AMENDMENT_ANNOTATION = re.compile(r"\((?:increased|reduced|decreased) by\s+\$[\d,]+\)")
+# Intra-word hyphens are collapsed so the documented soft-hyphen/compound
+# ambiguity (extraction emits "pro-mulgations" for "promulgations") can't
+# masquerade as a missing word. Recall is about words surviving, not byte fidelity.
+_INTRAWORD_HYPHEN = re.compile(r"(?<=\w)-(?=\w)")
 
 # Sentinel for "open-ended" line on an unnumbered (-1) line at end of a hunk
 # range. Larger than any realistic per-page line count; small enough that
@@ -45,6 +57,27 @@ def _location_within_range(
     hunk_start = (sp, sl if sl >= 0 else 0)
     hunk_end = (ep, el if el >= 0 else _OPEN_END_LINE)
     return hunk_start <= (csp, csl) <= hunk_end
+
+
+def _prose(text: str) -> str:
+    """Normalize text for prose-recall comparison (annotation- and hyphen-tolerant)."""
+    canonical = _AMENDMENT_ANNOTATION.sub("", normalize_for_recall(text))
+    return _INTRAWORD_HYPHEN.sub("", re.sub(r"\s+", " ", canonical).strip())
+
+
+def _prose_surfaces_in_any_hunk(diff: PdfDiff, fixture_text: str, *, removed: bool) -> bool:
+    """True if the fixture's prose appears as a contiguous run in some hunk's changed side.
+
+    Searches every hunk, not just the location-covering one: non-unique account
+    headings (e.g. "OPERATIONS AND SUPPORT") land at block boundaries, so the
+    covering hunk for a location can be an adjacent block. What matters for the
+    "would we see sneaked-in language?" question is that the prose surfaces
+    *somewhere* in the diff.
+    """
+    needle = _prose(fixture_text)
+    if not needle:
+        return False
+    return any(needle in _prose(h.v1_text if removed else h.v2_text) for h in diff.hunks)
 
 
 def _hunk_covering(diff: PdfDiff, case: PdfTestCase) -> PdfHunk | None:
@@ -91,4 +124,16 @@ class TestRecall:
         assert h is not None
         assert h.has_amendment_annotations, (
             f"Case {case.number} ({case.title}): expected has_amendment_annotations=True"
+        )
+
+    def test_changed_prose_surfaces_in_a_hunk(self, case: PdfTestCase, hr8752_pdf_diff: PdfDiff):
+        # The word-level counterpart to the financial-recall tests: the actual
+        # changed prose (not just a hunk at the right location) must appear in the
+        # diff. This is what answers "if language was sneaked in, would we see it?"
+        removed = case.change_type == "removed"
+        fixture = case.v1_text if removed else case.v2_text
+        if not fixture:
+            pytest.skip("no text on the asserted side (placeholder case)")
+        assert _prose_surfaces_in_any_hunk(hr8752_pdf_diff, fixture, removed=removed), (
+            f"Case {case.number} ({case.title}): changed prose did not surface in any hunk — a real word-level miss"
         )
