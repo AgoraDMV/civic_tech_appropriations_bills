@@ -45,7 +45,7 @@ class Jurisdiction:
         return Path("bills") / self.bill_id / self.version
 
 
-def _senate_fy25(slug, display, srpt, s_num, bill_id, source="summary"):
+def _senate_fy25(slug, display, srpt, s_num, bill_id, source="summary", fy="FY 2025"):
     return Jurisdiction(
         slug=slug,
         display=display,
@@ -53,7 +53,7 @@ def _senate_fy25(slug, display, srpt, s_num, bill_id, source="summary"):
         bill_pkg=f"BILLS-118s{s_num}rs",
         bill_id=bill_id,
         version="1_reported-in-senate.xml",
-        fy="FY 2025",
+        fy=fy,
         chamber="senate",
         source=source,
     )
@@ -77,6 +77,10 @@ JURISDICTIONS = [
     # DEPARTMENT OF DEFENSE--CIVIL); the comparative reader tracks that section as `bureau`
     # so agency-scoped recall matches whichever level is the bill's top-level agency.
     _senate_fy25("energy_water", "Energy-Water", "205", "4927", "118-s-4927", source="comparative"),
+    # Out-of-corpus overfitting guard: a DIFFERENT fiscal year (FY2024) of an already-covered
+    # jurisdiction. The bill (S.2321) and report (srpt62) are not otherwise in our corpus, so
+    # comparable recall here is evidence the parser is not overfit to FY2025 formatting.
+    _senate_fy25("cjs_fy2024", "Commerce-Justice-Science (FY2024)", "62", "2321", "118-s-2321", fy="FY 2024"),
 ]
 
 BY_SLUG = {j.slug: j for j in JURISDICTIONS}

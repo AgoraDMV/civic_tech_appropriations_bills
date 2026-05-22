@@ -119,6 +119,22 @@ The full current remainder:
 
 {chr(10).join(residual_sections) if residual_sections else "_(none)_"}
 
+## Guarding against overfitting
+
+The concern behind this work (GitHub #8) is that the parser's heuristics might be tuned to the
+specific bills we happen to have. Three things push against that:
+
+- **A different fiscal year.** The table above includes **Commerce-Justice-Science (FY2024)** —
+  a bill and report not otherwise in our corpus. It recalls at the same rate as FY2025 CJS, with
+  the same two structural misses, so the parser is not keyed to one year's formatting.
+- **Both chambers.** The Legislative Branch source spans House and Senate enrolled bills across
+  FY2014–FY2020. (The committee-report jurisdictions are Senate-only because House appropriations
+  reports render their account tables as embedded images, so there is no text for the reader to
+  extract — a limit of the *report source*, not the bill parser, which parses House bill XML fine.)
+- **Many independent jurisdictions.** Nine subcommittees with very different account structures
+  (flat tabular Defense, deeply-nested Energy-Water, narrative summary blocks) all recall in the
+  same band, which is the opposite of what overfitting to one structure would produce.
+
 ## Honest limits
 
 - This validates **amount extraction**, not the version-to-version **diff/comparison**, which

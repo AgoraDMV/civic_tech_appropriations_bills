@@ -16,7 +16,7 @@ bill XML; we check that our parser reads it correctly, by comparing the parser's
 ## Two independent ground-truth sources
 
 - **Legislative Branch** — 414 line items across 7 enrolled bills (113-hr-3547, 113-hr-83, 114-hr-2029, 115-hr-1625, 115-hr-244, 115-hr-5895, 116-hr-1865), chambers: house, senate. Source: an independently maintained appropriations spreadsheet. Validated *structurally* (`TestLegBranchValidation`): each curated account names a `match_path`, and the parser must produce a node there with the expected amount.
-- **9 other jurisdictions** — committee-recommended amounts parsed from the
+- **10 other jurisdictions** — committee-recommended amounts parsed from the
   FY2025 Senate Appropriations **committee reports** (govinfo `CRPT-…`), compared to what the
   parser extracts from each reported bill. The report is written by committee staff for a
   different purpose than the bill, so it is genuinely independent. (Committee reports, not CRS
@@ -43,8 +43,9 @@ offsetting collections) are excluded — they are not leaf appropriation account
 | Labor-HHS-Education | `118-s-4942` | 123 | 108 | 88% |
 | Defense | `118-s-4921` | 77 | 77 | 100% |
 | Energy-Water | `118-s-4927` | 67 | 61 | 91% |
+| Commerce-Justice-Science (FY2024) | `118-s-2321` | 75 | 73 | 97% |
 
-**Overall: 653 / 693 accounts recalled (94.2%).**
+**Overall: 726 / 768 accounts recalled (94.5%).**
 
 ## Why the remainder is not a parser problem
 
@@ -113,6 +114,25 @@ The full current remainder:
   - DEPARTMENT OF ENERGY / Defense function — $150,000,000
   - DEPARTMENT OF ENERGY / Colorado River Basin Fund (sec 307) — $2,000,000
   - INDEPENDENT AGENCIES / Salaries and expenses — $942,558,000
+**Commerce-Justice-Science (FY2024)** (2)
+  - DEPARTMENT OF JUSTICE / SALARIES AND EXPENSES — $3,210,719,000
+  - DEPARTMENT OF JUSTICE / PUBLIC SAFETY OFFICERS BENEFITS — $208,800,000
+
+## Guarding against overfitting
+
+The concern behind this work (GitHub #8) is that the parser's heuristics might be tuned to the
+specific bills we happen to have. Three things push against that:
+
+- **A different fiscal year.** The table above includes **Commerce-Justice-Science (FY2024)** —
+  a bill and report not otherwise in our corpus. It recalls at the same rate as FY2025 CJS, with
+  the same two structural misses, so the parser is not keyed to one year's formatting.
+- **Both chambers.** The Legislative Branch source spans House and Senate enrolled bills across
+  FY2014–FY2020. (The committee-report jurisdictions are Senate-only because House appropriations
+  reports render their account tables as embedded images, so there is no text for the reader to
+  extract — a limit of the *report source*, not the bill parser, which parses House bill XML fine.)
+- **Many independent jurisdictions.** Nine subcommittees with very different account structures
+  (flat tabular Defense, deeply-nested Energy-Water, narrative summary blocks) all recall in the
+  same band, which is the opposite of what overfitting to one structure would produce.
 
 ## Honest limits
 
