@@ -1,0 +1,239 @@
+"""Unit tests for the committee-report reader (parsers/committee_report.py).
+
+The reader extracts account-level ground truth from a Senate appropriations
+committee report's HTML `<pre>` dump (GPO's authoritative ASCII layout, with
+preserved column alignment). These tests use inline snippets mirroring the real
+layout of Senate Report 118-198 so they run in CI without a committed fixture.
+"""
+
+import re
+from pathlib import Path
+
+import pytest
+
+from parsers.committee_report import (
+    extract_pre_text,
+    parse_comparative_statement,
+    parse_summary_blocks,
+)
+
+# A real-shape 3-line summary block: ALL-CAPS heading, blank line, then the
+# Appropriations / Budget estimate / Committee recommendation rows in actual dollars.
+BASIC_BLOCK = """\
+                     INDUSTRIAL TECHNOLOGY SERVICES
+
+Appropriations, 2024....................................    $212,000,000
+Budget estimate, 2025...................................     212,000,000
+Committee recommendation................................     225,000,000
+
+The Committee provides $225,000,000 for Industrial Technology Services.
+"""
+
+
+def test_extract_pre_text_pulls_pre_block_and_unescapes():
+    html = "<html><body><pre>\nA &amp; B\n$1,000\n</pre></body></html>"
+    assert extract_pre_text(html) == "\nA & B\n$1,000\n"
+
+
+def test_parse_summary_blocks_basic():
+    blocks = parse_summary_blocks(BASIC_BLOCK)
+    assert len(blocks) == 1
+    assert blocks[0].heading == "INDUSTRIAL TECHNOLOGY SERVICES"
+    assert blocks[0].committee_recommendation == 225_000_000
+
+
+def test_parse_summary_blocks_basic_has_no_title():
+    # No preceding "TITLE N" heading, so the account carries no title context.
+    assert parse_summary_blocks(BASIC_BLOCK)[0].title is None
+
+
+# In the narrative, a title is two centered lines: the Roman numeral, then (after a
+# blank) the department name. The account blocks that follow belong to that title.
+TITLED_BLOCK = """\
+                                TITLE II
+
+                         DEPARTMENT OF JUSTICE
+
+    The Committee recommends a total of $38,425,950,000 for the
+Department of Justice.
+
+                         GENERAL ADMINISTRATION
+                            SALARIES AND EXPENSES
+
+Appropriations, 2024....................................     $150,000,000
+Budget estimate, 2025...................................      150,000,000
+Committee recommendation................................      145,000,000
+"""
+
+
+def test_parse_summary_blocks_captures_title():
+    blocks = parse_summary_blocks(TITLED_BLOCK)
+    assert len(blocks) == 1
+    assert blocks[0].title == "DEPARTMENT OF JUSTICE"
+    assert blocks[0].heading == "SALARIES AND EXPENSES"
+    assert blocks[0].committee_recommendation == 145_000_000
+
+
+# A parenthetical qualifier line sits between the heading and the summary rows; the
+# reader must walk past it to the real ALL-CAPS heading.
+PARENTHETICAL_BLOCK = """\
+                     PERIODIC CENSUSES AND PROGRAMS
+
+                     (INCLUDING TRANSFER OF FUNDS)
+
+Appropriations, 2024....................................  $1,054,000,000
+Budget estimate, 2025...................................   1,210,344,000
+Committee recommendation................................   1,210,344,000
+"""
+
+# A bureau-level rollup sits under a mixed-case header (not an account heading); the
+# reader should skip it. Its amount is the sum of the leaf accounts beneath it.
+BUREAU_ROLLUP_BLOCK = """\
+       National Telecommunications and Information Administration
+
+Appropriations, 2024....................................     $59,000,000
+Budget estimate, 2025...................................      67,000,000
+Committee recommendation................................      61,650,000
+"""
+
+
+def test_parse_summary_blocks_skips_parenthetical_qualifier():
+    blocks = parse_summary_blocks(PARENTHETICAL_BLOCK)
+    assert len(blocks) == 1
+    assert blocks[0].heading == "PERIODIC CENSUSES AND PROGRAMS"
+    assert blocks[0].committee_recommendation == 1_210_344_000
+
+
+def test_parse_summary_blocks_skips_mixed_case_bureau_header():
+    assert parse_summary_blocks(BUREAU_ROLLUP_BLOCK) == []
+
+
+# The "(INCLUDING TRANSFER OF FUNDS)" qualifier sometimes renders WITHOUT parentheses,
+# so it is ALL-CAPS and would be mistaken for the heading. The reader must skip it and
+# reach the real account heading above.
+UNPARENTHESIZED_QUALIFIER_BLOCK = """\
+             COMMUNITY ORIENTED POLICING SERVICES PROGRAMS
+
+                      INCLUDING TRANSFER OF FUNDS
+
+Appropriations, 2024....................................    $664,516,000
+Budget estimate, 2025...................................     534,000,000
+Committee recommendation................................     548,123,000
+"""
+
+
+def test_parse_summary_blocks_skips_unparenthesized_qualifier():
+    blocks = parse_summary_blocks(UNPARENTHESIZED_QUALIFIER_BLOCK)
+    assert len(blocks) == 1
+    assert blocks[0].heading == "COMMUNITY ORIENTED POLICING SERVICES PROGRAMS"
+    assert blocks[0].committee_recommendation == 548_123_000
+
+
+# The comparative statement is a fixed-width table; the committee-recommendation is the
+# 3rd numeric column, in thousands. Blank cells render as dot runs; deltas carry +/-.
+# Spacing is compressed from the real report (dot-run blank cells, whitespace-separated
+# columns) only to keep the line under the lint limit; the parser is whitespace-tolerant.
+COMPARATIVE_TABLE = """\
+Operations and administration.....  573,000  657,500  598,000  +25,000  -59,500
+Operations and Administration (emergency)....  50,000  ....  50,000  ....  +50,000
+Offsetting fee collections....  -12,000  -12,000  -12,000  ....  ....
+    Total, Bureau of the Census....  1,382,500  1,577,691  1,577,691  +195,191  ....
+"""
+
+
+def test_parse_comparative_statement_reads_committee_rec_column():
+    rows = parse_comparative_statement(COMPARATIVE_TABLE)
+    by_item = {r.item: r.committee_recommendation_thousands for r in rows}
+    assert by_item["Operations and administration"] == 598_000
+    assert by_item["Total, Bureau of the Census"] == 1_577_691
+
+
+def test_parse_comparative_statement_handles_blanks_and_negatives():
+    rows = {r.item: r.committee_recommendation_thousands for r in parse_comparative_statement(COMPARATIVE_TABLE)}
+    # Blank 2024/budget cells must not shift the committee-rec column.
+    assert rows["Operations and Administration (emergency)"] == 50_000
+    # Negative (offsetting fee collection).
+    assert rows["Offsetting fee collections"] == -12_000
+
+
+def test_parse_comparative_statement_ignores_non_table_lines():
+    # Summary-block lines have a single amount, not three columns, so they are not rows.
+    assert parse_comparative_statement(BASIC_BLOCK) == []
+
+
+# --- Full-report cross-check: the report's two account tables should agree -------------
+#
+# The 3-line summary blocks and the comparative statement are independent renderings of
+# the same committee recommendations. Where an account name matches uniquely between them,
+# the amounts should agree (summary in dollars == comparative in thousands x 1000). This
+# "validates the validator": it catches defects in the ground-truth document itself.
+#
+# The known disagreements below are real and explained, not parser bugs. Five are
+# gross/base decompositions — the summary states the account total the bill appropriates,
+# while the comparative breaks out an emergency or fee-adjusted component on its own line.
+# One is a typo in the report's narrative that its own comparative statement contradicts.
+_REPORT_HTML = Path("test_data/CRPT-118srpt198.htm")
+_KNOWN_TABLE_DISAGREEMENTS = {
+    "ECONOMIC DEVELOPMENT ASSISTANCE PROGRAMS": (
+        "summary 410,000 = base 369,000 + emergency 41,000 (the bill amount); comparative lists the base line."
+    ),
+    "CONSTRUCTION OF RESEARCH FACILITIES": (
+        "summary 245,600 = base 150,600 + emergency 95,000 (the bill amount); comparative lists the base line."
+    ),
+    "BUILDINGS AND FACILITIES": (
+        "summary 290,215 = base 171,215 + emergency 119,000 (the bill amount); comparative lists the base line."
+    ),
+    "FEDERAL PRISONER DETENTION": (
+        "summary 2,240,697 = base 1,990,697 + emergency 250,000 (the bill amount); comparative lists the base line."
+    ),
+    "SALARIES AND EXPENSES, ANTITRUST DIVISION": (
+        "antitrust pre-merger filing fees: summary 288,000 is net of offsetting "
+        "collections (the bill amount); comparative shows the gross 304,000."
+    ),
+    "SAFETY, SECURITY, AND MISSION SERVICES": (
+        "report narrative typo: summary prints 3,044,440,000 (the budget estimate); "
+        "the comparative statement and the bill both say 3,044,400,000."
+    ),
+}
+
+
+def _norm(text):
+    return re.sub(r"[^a-z0-9 ]", "", text.lower()).strip()
+
+
+def _crosscheck_pairs():
+    """(heading, summary_dollars, comparative_dollars) for uniquely-named matches."""
+    text = extract_pre_text(_REPORT_HTML.read_text(encoding="utf-8", errors="replace"))
+    comp = {}
+    for row in parse_comparative_statement(text):
+        comp.setdefault(_norm(row.item), set()).add(row.committee_recommendation_thousands)
+    pairs = []
+    for acc in parse_summary_blocks(text):
+        vals = comp.get(_norm(acc.heading))
+        if vals and len(vals) == 1:
+            (thousands,) = vals
+            pairs.append((acc.heading, acc.committee_recommendation, thousands * 1000))
+    return pairs
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(not _REPORT_HTML.exists(), reason="committee report HTML not present")
+def test_summary_and_comparative_tables_agree():
+    disagreements = [
+        f"{heading}: summary ${summ:,} vs comparative ${comp:,}"
+        for heading, summ, comp in _crosscheck_pairs()
+        if summ != comp and heading not in _KNOWN_TABLE_DISAGREEMENTS
+    ]
+    assert disagreements == [], "New summary/comparative disagreements (report defect or parser change):\n" + "\n".join(
+        f"  {d}" for d in disagreements
+    )
+
+
+@pytest.mark.slow
+@pytest.mark.skipif(not _REPORT_HTML.exists(), reason="committee report HTML not present")
+def test_known_table_disagreements_are_still_disagreements():
+    """Guard the allow-list: a documented disagreement that now agrees (or vanished) is a
+    stale entry that should be removed, lest it mask a real future change."""
+    actual = {h for h, summ, comp in _crosscheck_pairs() if summ != comp}
+    stale = [h for h in _KNOWN_TABLE_DISAGREEMENTS if h not in actual]
+    assert stale == [], "Stale _KNOWN_TABLE_DISAGREEMENTS entries:\n" + "\n".join(f"  {h}" for h in stale)
