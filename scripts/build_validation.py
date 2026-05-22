@@ -28,10 +28,22 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import re  # noqa: E402
 
 from bill_tree import normalize_bill  # noqa: E402
-from parsers.committee_report import extract_pre_text, parse_summary_blocks  # noqa: E402
+from parsers.committee_report import (  # noqa: E402
+    extract_pre_text,
+    parse_comparative_statement,
+    parse_summary_blocks,
+)
 from validation_sources import BY_SLUG, JURISDICTIONS, Jurisdiction  # noqa: E402
 
 _GOVINFO = "https://www.govinfo.gov/content/pkg"
+
+# Comparative-statement rows that are not leaf appropriation accounts: rollup totals and the
+# additive components of the advance-appropriation arithmetic. They are real table lines but
+# not single tokens in the bill, so they are not ground truth for amount recall.
+_NON_LEAF_ITEM_RE = re.compile(
+    r"^(?:total|subtotal|grand total|net grand total|less\b|available from prior)",
+    re.IGNORECASE,
+)
 
 
 def _norm(s: str | None) -> str:
@@ -86,8 +98,24 @@ def fetch_sources(j: Jurisdiction) -> None:
         _fetch(f"{_GOVINFO}/{j.bill_pkg}/xml/{j.bill_pkg}.xml", j.bill_xml_path)
 
 
+def _ground_truth(j: Jurisdiction, text: str) -> list[tuple[str | None, str | None, str, int]]:
+    """(title, bureau, excel_name, expected_amount_in_dollars) rows from the report."""
+    if j.source == "comparative":
+        # Comparative amounts are in thousands; keep only leaf accounts (drop rollup totals
+        # and the advance-appropriation component lines, which aren't single bill tokens).
+        return [
+            (row.title, None, row.item, row.committee_recommendation_thousands * 1000)
+            for row in parse_comparative_statement(text)
+            # Negative committee recs are rescissions/offsetting collections/reductions, not
+            # leaf appropriations; the bill states them as positive rescission amounts or
+            # offsetting language, so they aren't recallable as the stated negative.
+            if row.committee_recommendation_thousands > 0 and not _NON_LEAF_ITEM_RE.match(row.item)
+        ]
+    return [(acc.title, acc.bureau, acc.heading, acc.committee_recommendation) for acc in parse_summary_blocks(text)]
+
+
 def build_fixture(j: Jurisdiction) -> dict:
-    accounts = parse_summary_blocks(extract_pre_text(j.report_html_path.read_text(encoding="utf-8", errors="replace")))
+    text = extract_pre_text(j.report_html_path.read_text(encoding="utf-8", errors="replace"))
     nodes = [n for n in normalize_bill(j.bill_xml_path).nodes if n.match_path] if j.bill_xml_path.exists() else []
     rows = [
         {
@@ -95,23 +123,27 @@ def build_fixture(j: Jurisdiction) -> dict:
             "version": j.version,
             "fy": j.fy,
             "chamber": j.chamber,
-            "title": acc.title,  # enclosing agency, e.g. "DEPARTMENT OF JUSTICE"
-            "bureau": acc.bureau,  # enclosing bureau, e.g. "Federal Bureau of Investigation"
-            "excel_name": acc.heading,
-            "match_path": map_account_path(nodes, acc.title, acc.bureau, acc.heading),
-            "expected_amount": acc.committee_recommendation,
+            "title": title,  # enclosing agency, e.g. "DEPARTMENT OF JUSTICE" / "MILITARY PERSONNEL"
+            "bureau": bureau,  # enclosing bureau (summary source only); null for comparative
+            "excel_name": excel_name,
+            "match_path": map_account_path(nodes, title, bureau, excel_name),
+            "expected_amount": amount,
         }
-        for acc in accounts
+        for title, bureau, excel_name, amount in _ground_truth(j, text)
     ]
+    src = (
+        "comparative statement (committee-recommendation column, converted from thousands to dollars)"
+        if j.source == "comparative"
+        else "3-line summary blocks (committee-recommendation amounts, in actual dollars)"
+    )
     return {
         "source": f"{j.report_pkg}, {j.display} explanatory statement for {j.bill_pkg}",
         "note": (
             f"{j.display} {j.fy} (Reported in Senate) account amounts, extracted from the "
-            "committee report's 3-line summary blocks and validated against the bill XML. "
-            "Committee-recommendation amounts are in actual dollars. `match_path` is the mapped "
-            "bill node when the account name resolves uniquely (strict node-level check); null "
-            "otherwise, where the test falls back to agency-scoped recall via `title`. External "
-            "ground truth for GitHub #8. Regenerate with scripts/build_validation.py."
+            f"committee report's {src} and validated against the bill XML. `match_path` is the "
+            "mapped bill node when the account name resolves uniquely (strict node-level check); "
+            "null otherwise, where the test falls back to agency-scoped recall via `title`. "
+            "External ground truth for GitHub #8. Regenerate with scripts/build_validation.py."
         ),
         "accounts": rows,
     }
