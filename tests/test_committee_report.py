@@ -274,6 +274,69 @@ def test_parse_comparative_statement_ignores_non_table_lines():
     assert parse_comparative_statement(BASIC_BLOCK) == []
 
 
+# Tabular jurisdictions (Defense, Energy-Water) print accounts only in the canonical
+# "COMPARATIVE STATEMENT OF NEW BUDGET (OBLIGATIONAL) AUTHORITY" table, which has a fixed
+# column layout (2024 / Budget estimate / Committee recommendation / two deltas). Reports
+# *also* carry a front-matter summary table whose columns differ — parsing it as if column
+# 3 were the committee recommendation yields garbage (a delta column, with negatives). The
+# reader must anchor on the canonical statement and ignore everything before it.
+CANONICAL_WITH_FRONT_MATTER = """\
+                    SUMMARY OF BILL (front matter, different columns)
+
+                                            Budget        Committee     Change from
+                Item                       estimate     recommendation    estimate
+Net grand total..........................  900,000,000   852,139,000     -47,861,000
+
+  COMPARATIVE STATEMENT OF NEW BUDGET (OBLIGATIONAL) AUTHORITY FOR FISCAL YEAR 2024
+                          [In thousands of dollars]
+                                              2024        Budget       Committee
+            Item                          appropriation  estimate    recommendation   2024  estimate
+
+                            TITLE I
+
+                      MILITARY PERSONNEL
+
+Military Personnel, Army.............  50,041,206  50,679,897  50,702,367  +661,161  +22,470
+Military Personnel, Navy.............  36,707,388  38,724,875  38,400,554  +1,693,166  -324,321
+    Total, title I, Military Personnel.  86,748,594  89,404,772  89,102,921  +2,354,327  -301,851
+"""
+
+
+def test_parse_comparative_statement_anchors_on_canonical_and_skips_front_matter():
+    rows = parse_comparative_statement(CANONICAL_WITH_FRONT_MATTER)
+    items = {r.item for r in rows}
+    # The front-matter "Net grand total" row (different column layout) must not appear.
+    assert "Net grand total" not in items
+    by_item = {r.item: r.committee_recommendation_thousands for r in rows}
+    assert by_item["Military Personnel, Army"] == 50_702_367
+    assert by_item["Military Personnel, Navy"] == 38_400_554
+
+
+def test_parse_comparative_statement_tracks_bare_numeral_title():
+    # Defense style: bare "TITLE I" followed by the ALL-CAPS section name (the bill agency).
+    rows = parse_comparative_statement(CANONICAL_WITH_FRONT_MATTER)
+    army = next(r for r in rows if r.item == "Military Personnel, Army")
+    assert army.title == "MILITARY PERSONNEL"
+
+
+# Energy-Water style: the title and its name are on one line, joined by "--".
+INLINE_TITLE_STATEMENT = """\
+  COMPARATIVE STATEMENT OF NEW BUDGET (OBLIGATIONAL) AUTHORITY FOR FISCAL YEAR 2024
+                          [In thousands of dollars]
+            Item                          appropriation  estimate    recommendation   2024  estimate
+
+                  TITLE II--DEPARTMENT OF THE INTERIOR
+
+Water and Related Resources..........  1,895,000  1,950,000  1,920,000  +25,000  -30,000
+"""
+
+
+def test_parse_comparative_statement_tracks_inline_title():
+    rows = parse_comparative_statement(INLINE_TITLE_STATEMENT)
+    assert rows[0].title == "DEPARTMENT OF THE INTERIOR"
+    assert rows[0].committee_recommendation_thousands == 1_920_000
+
+
 # --- Full-report cross-check: the report's two account tables should agree -------------
 #
 # The 3-line summary blocks and the comparative statement are independent renderings of

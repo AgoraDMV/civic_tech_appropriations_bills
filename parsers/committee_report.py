@@ -43,6 +43,15 @@ _TABLE_HEADER_RE = re.compile(
 # right-aligned numeric columns. The non-greedy label stops at the first dot run (its own
 # leader), leaving the columns — including blank cells, which render as their own dot runs.
 _COMPARATIVE_ROW_RE = re.compile(r"^(\s*.*?\S)\.{2,}\s+(.*\d.*)$")
+# Anchor for the canonical full table. Reports also carry a front-matter summary table with
+# a *different* column layout (committee-rec-vs-budget delta where the canonical table has
+# the committee recommendation), so parsing must start at this header to read column 3
+# correctly. Matched on the stable lead-in; the full header continues "(OBLIGATIONAL)...".
+_CANONICAL_STATEMENT_RE = re.compile(r"COMPARATIVE STATEMENT OF NEW BUDGET")
+# A title line in the comparative statement, either inline ("TITLE II--DEPARTMENT OF THE
+# INTERIOR") or a bare numeral ("TITLE I") whose agency name is the next ALL-CAPS heading.
+# Group 1 is the inline name (everything after the first dash run), else None.
+_COMPARATIVE_TITLE_RE = re.compile(r"^\s*TITLE [IVXLC]+(?:\s*[-—–]{1,2}\s*(.+?))?\s*$")
 _BLANK_CELL_RE = re.compile(r"^\.{2,}$")
 _NUMERIC_CELL_RE = re.compile(r"^[+\-]?\(?-?[\d,]+\)?$")
 # Qualifier lines sit between an account heading and its summary rows. They are ALL-CAPS
@@ -59,6 +68,7 @@ class ComparativeRow:
 
     item: str  # item label as printed (e.g. "Operations and administration")
     committee_recommendation_thousands: int  # 3rd numeric column
+    title: str | None = None  # enclosing title/agency (e.g. "MILITARY PERSONNEL")
 
 
 @dataclass(frozen=True)
@@ -162,9 +172,23 @@ def parse_comparative_statement(text: str) -> list[ComparativeRow]:
     is the 3rd numeric column. Rows whose 3rd column is blank or a parenthetical memo (a
     transfer, non-add) are skipped. Summary-block lines carry a single amount, not three
     columns, so they do not match — the table can be fed the whole report text.
+
+    Parsing is anchored on the canonical statement header when present, so a report's
+    front-matter summary table (different column layout) is skipped. The enclosing TITLE
+    section is tracked and attached to each row as `title` (the bill-agency context). Rows
+    here include subtotals/totals as printed; leaf-row selection is the caller's concern.
     """
+    lines = text.split("\n")
+    starts = [i for i, line in enumerate(lines) if _CANONICAL_STATEMENT_RE.search(line)]
+    start = starts[-1] if starts else 0  # last == the full statement (front matter precedes it)
     rows: list[ComparativeRow] = []
-    for line in text.split("\n"):
+    current_title: str | None = None
+    for i in range(start, len(lines)):
+        line = lines[i]
+        tm = _COMPARATIVE_TITLE_RE.match(line)
+        if tm:
+            current_title = (tm.group(1) or "").strip() or _title_name_after(lines, i)
+            continue
         m = _COMPARATIVE_ROW_RE.match(line)
         if not m:
             continue
@@ -174,6 +198,7 @@ def parse_comparative_statement(text: str) -> list[ComparativeRow]:
                 ComparativeRow(
                     item=m.group(1).strip(),
                     committee_recommendation_thousands=cells[2],
+                    title=current_title,
                 )
             )
     return rows
