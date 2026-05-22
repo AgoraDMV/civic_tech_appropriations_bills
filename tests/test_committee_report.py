@@ -108,6 +108,31 @@ def test_parse_summary_blocks_bureau_is_none_without_one():
     assert parse_summary_blocks(BASIC_BLOCK)[0].bureau is None
 
 
+# An embedded table's column-header row is indented and mixed-case, so it looks like a
+# bureau header. It must NOT be captured as the bureau (it would mis-steer node mapping).
+TABLE_HEADER_BEFORE_BLOCK = """\
+                                TITLE II
+
+                         DEPARTMENT OF JUSTICE
+
+                    Federal Bureau of Investigation
+
+         Program                     Budget estimate     Committee recommendation
+    Some Program....................     100,000              90,000
+
+                         SALARIES AND EXPENSES
+
+Appropriations, 2024.................................... $10,643,713,000
+Budget estimate, 2025...................................  11,272,944,000
+Committee recommendation................................  10,761,762,000
+"""
+
+
+def test_parse_summary_blocks_ignores_table_header_as_bureau():
+    block = parse_summary_blocks(TABLE_HEADER_BEFORE_BLOCK)[0]
+    assert block.bureau == "Federal Bureau of Investigation"
+
+
 # A parenthetical qualifier line sits between the heading and the summary rows; the
 # reader must walk past it to the real ALL-CAPS heading.
 PARENTHETICAL_BLOCK = """\

@@ -32,6 +32,13 @@ _COMMITTEE_REC_RE = re.compile(r"^Committee recommendation\.{2,}\s+\$?([\d,]+)\s
 # only later in the comparative statement, so matching the bare numeral keeps title
 # tracking anchored to the narrative the summary blocks live in.
 _TITLE_NUMERAL_RE = re.compile(r"^TITLE [IVXLC]+$")
+# Column-label words that mark a line as an embedded table header rather than a bureau
+# name. Real bureau names ("Federal Bureau of Investigation") never contain these; table
+# headers ("Project title estimate recommendation", "...Committee recommendation") do.
+_TABLE_HEADER_RE = re.compile(
+    r"\b(?:recommendation|estimate|appropriations?|fiscal year|grand total|budget|amount|project title|activity)\b",
+    re.IGNORECASE,
+)
 # A comparative-statement data row: an item label joined by leader dots to a tail of
 # right-aligned numeric columns. The non-greedy label stops at the first dot run (its own
 # leader), leaving the columns — including blank cells, which render as their own dot runs.
@@ -120,6 +127,8 @@ def _is_bureau_header(line: str) -> bool:
         return False
     if not (s[0].isupper() and any(c.islower() for c in s)):
         return False
+    if _TABLE_HEADER_RE.search(s) or any(c.isdigit() for c in s):
+        return False  # embedded table header / data row, not a bureau name
     return len(s.split()) <= 8 and not s.endswith((".", ":", ";", ","))
 
 
