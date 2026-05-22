@@ -23,12 +23,8 @@ from recall_text import normalize_for_recall
 from diff_pdf import PdfDiff, diff_pdfs
 from formatters.adapters import pdf_diff_to_view
 from formatters.diff_html import format_diff_html
+from parsers.pdf_anchors import extract_anchors
 from parsers.pdf_text import Line, Page
-
-# A line number guaranteed not to collide with the source PDF's printed numbers
-# (GPO numbers are 1-2 digits, so the (page, line) anchor key stays unique).
-_SAFE_LINE_NO = 900
-
 
 # ---- Injection helpers (operate on the frozen Page/Line dataclasses) ---------
 
@@ -58,12 +54,31 @@ def _append_page(pages: list[Page], page_number: int, lines: list[Line]) -> list
     return [*pages, Page(page_number, tuple(lines))]
 
 
+def _insert_page_before(pages: list[Page], before_page_number: int, page_number: int, lines: list[Line]) -> list[Page]:
+    """Insert a new page into the list immediately before `before_page_number`.
+
+    A standalone page keeps the injected `SEC.` anchor's (page, line) key unique
+    and its document order correct (anchors are sorted by line number *within* a
+    page, so a high synthetic line number on a real page would sort wrong).
+    """
+    idx = next(i for i, p in enumerate(pages) if p.page_number == before_page_number)
+    return [*pages[:idx], Page(page_number, tuple(lines)), *pages[idx:]]
+
+
 # ---- Scenario builders -------------------------------------------------------
 
 
 def _build_synthetic_v2(v1_pages: list[Page]) -> list[Page]:
-    """Apply all injection scenarios to a copy of v1, returning synthetic v2 pages."""
+    """Apply all injection scenarios to a copy of v1, returning synthetic v2 pages.
+
+    Each scenario plants one nonsense sentinel at a distinct location, exercising
+    a different code path in diff_pdf. Injections are keyed by (page, line) lookup
+    on the current page list, so they're order-independent.
+    """
     pages = list(v1_pages)
+    anchors = extract_anchors(pages)
+    sections = [a for a in anchors if a.kind == "section"]
+    proc = next(a for a in anchors if a.kind == "account" and a.text.startswith("PROCUREMENT"))
     last_page_no = max(p.page_number for p in pages)
 
     # Scenario 1 — new section appended at the end of the document (clean `added`).
@@ -75,6 +90,50 @@ def _build_synthetic_v2(v1_pages: list[Page]) -> list[Page]:
             Line(2, "used for the ZZQALPHA demonstration program described in this"),
             Line(3, "section."),
         ],
+    )
+
+    # Scenario 2 — new section inserted mid-document, on its own page, just before
+    # the first existing SEC. anchor. New anchor key => `added` hunk.
+    pages = _insert_page_before(
+        pages,
+        sections[0].page_number,
+        900,
+        [
+            Line(1, "SEC. 998. None of the funds appropriated by this Act may be used"),
+            Line(2, "to implement the ZZQBRAVO initiative without prior approval of the"),
+            Line(3, "Committees on Appropriations."),
+        ],
+    )
+
+    # Scenario 3 — small clause inserted into an existing section body (stays well
+    # above the 0.4 similarity floor => `modified`, with the sentinel inline).
+    sec102 = sections[1]
+    idx = _page_line_index(pages, sec102.page_number, sec102.line_number)
+    pages = _inject(
+        pages,
+        sec102.page_number,
+        idx + 1,
+        [Line(None, "Provided further, That $1 shall be available for the ZZQCHARLIE program: ")],
+    )
+
+    # Scenario 4 — large insertion into a small account block, enough to drop the
+    # block below the 0.4 split threshold and exercise the removed+added split path.
+    idx = _page_line_index(pages, proc.page_number, proc.line_number)
+    bulk = [
+        Line(
+            None, f"Provided further, That additional ZZQDELTA appropriations are made available under paragraph {n}: "
+        )
+        for n in range(60)
+    ]
+    pages = _inject(pages, proc.page_number, idx + 1, bulk)
+
+    # Scenario 5 — insertion into the preamble (before the first anchor) => the
+    # preamble block is `modified` and carries the sentinel.
+    pages = _inject(
+        pages,
+        1,
+        1,
+        [Line(None, "Be it enacted that the ZZQECHO clause is hereby inserted into this measure. ")],
     )
 
     return pages
@@ -99,6 +158,12 @@ def injected_html(injected_diff: PdfDiff) -> str:
 
 _CASES = [
     pytest.param("ZZQALPHA", {"added"}, id="new-section-end"),
+    pytest.param("ZZQBRAVO", {"added"}, id="new-section-mid"),
+    pytest.param("ZZQCHARLIE", {"modified"}, id="small-clause"),
+    # Large insertion lands as `added` after the split, or `modified` if the block
+    # stays above 0.4 — the sentinel surfacing is what matters, not which side.
+    pytest.param("ZZQDELTA", {"added", "modified"}, id="large-insertion-split"),
+    pytest.param("ZZQECHO", {"modified"}, id="preamble"),
 ]
 
 
