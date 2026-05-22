@@ -16,7 +16,7 @@ bill XML; we check that our parser reads it correctly, by comparing the parser's
 ## Two independent ground-truth sources
 
 - **Legislative Branch** — 414 line items across 7 enrolled bills (113-hr-3547, 113-hr-83, 114-hr-2029, 115-hr-1625, 115-hr-244, 115-hr-5895, 116-hr-1865), chambers: house, senate. Source: an independently maintained appropriations spreadsheet. Validated *structurally* (`TestLegBranchValidation`): each curated account names a `match_path`, and the parser must produce a node there with the expected amount.
-- **8 other jurisdictions** — committee-recommended amounts parsed from the
+- **9 other jurisdictions** — committee-recommended amounts parsed from the
   FY2025 Senate Appropriations **committee reports** (govinfo `CRPT-…`), compared to what the
   parser extracts from each reported bill. The report is written by committee staff for a
   different purpose than the bill, so it is genuinely independent. (Committee reports, not CRS
@@ -42,8 +42,9 @@ offsetting collections) are excluded — they are not leaf appropriation account
 | Financial Services-General Government | `118-s-4928` | 100 | 98 | 98% |
 | Labor-HHS-Education | `118-s-4942` | 123 | 108 | 88% |
 | Defense | `118-s-4921` | 77 | 77 | 100% |
+| Energy-Water | `118-s-4927` | 67 | 61 | 91% |
 
-**Overall: 592 / 626 accounts recalled (94.6%).**
+**Overall: 653 / 693 accounts recalled (94.2%).**
 
 ## Why the remainder is not a parser problem
 
@@ -105,6 +106,13 @@ The full current remainder:
   - DEPARTMENT OF HEALTH AND HUMAN SERVICES / AGING AND DISABILITY SERVICES PROGRAMS — $2,543,817,000
   - DEPARTMENT OF HEALTH AND HUMAN SERVICES / RETIREMENT PAY AND MEDICAL BENEFITS FOR COMMISSIONED OFFICERS — $894,795,000
   - RELATED AGENCIES / OFFICE OF INSPECTOR GENERAL — $114,665,000
+**Energy-Water** (6)
+  - DEPARTMENT OF DEFENSE--CIVIL / Water Infrastructure Finance and Innovation Program Account — $10,000,000
+  - DEPARTMENT OF THE INTERIOR / Central Valley Project Restoration Fund — $55,656,000
+  - DEPARTMENT OF ENERGY / Nuclear Energy — $1,525,000,000
+  - DEPARTMENT OF ENERGY / Defense function — $150,000,000
+  - DEPARTMENT OF ENERGY / Colorado River Basin Fund (sec 307) — $2,000,000
+  - INDEPENDENT AGENCIES / Salaries and expenses — $942,558,000
 
 ## Honest limits
 
@@ -114,9 +122,8 @@ The full current remainder:
   legislative process. It is strong for catching the parser misreading unfamiliar structure
   (which is the overfitting risk), but it is not a third-party audit.
 - Coverage is the FY2025 Senate-reported bills for these jurisdictions, plus Legislative Branch
-  across several years and both chambers. Energy-Water (whose comparative statement nests
-  accounts below a department title that differs from the bill's top-level agency, needing
-  bureau-aware mapping) and the remaining subcommittees are not yet covered here.
+  across several years and both chambers. The remaining FY2025 subcommittees (e.g. Homeland
+  Security, MilCon-VA) and other years/chambers are not yet covered here.
 
 ## Reproduce
 

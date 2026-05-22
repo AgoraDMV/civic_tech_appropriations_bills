@@ -127,9 +127,8 @@ The full current remainder:
   legislative process. It is strong for catching the parser misreading unfamiliar structure
   (which is the overfitting risk), but it is not a third-party audit.
 - Coverage is the FY2025 Senate-reported bills for these jurisdictions, plus Legislative Branch
-  across several years and both chambers. Energy-Water (whose comparative statement nests
-  accounts below a department title that differs from the bill's top-level agency, needing
-  bureau-aware mapping) and the remaining subcommittees are not yet covered here.
+  across several years and both chambers. The remaining FY2025 subcommittees (e.g. Homeland
+  Security, MilCon-VA) and other years/chambers are not yet covered here.
 
 ## Reproduce
 

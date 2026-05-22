@@ -73,12 +73,10 @@ JURISDICTIONS = [
     _senate_fy25("labor_hhs", "Labor-HHS-Education", "207", "4942", "118-s-4942"),
     # Tabular jurisdictions: accounts appear only in the comparative statement (in thousands).
     _senate_fy25("defense", "Defense", "204", "4921", "118-s-4921", source="comparative"),
+    # Energy-Water nests accounts below the TITLE (e.g. Corps of Engineers--Civil under
+    # DEPARTMENT OF DEFENSE--CIVIL); the comparative reader tracks that section as `bureau`
+    # so agency-scoped recall matches whichever level is the bill's top-level agency.
+    _senate_fy25("energy_water", "Energy-Water", "205", "4927", "118-s-4927", source="comparative"),
 ]
-
-# Deferred: Energy-Water (srpt205/S.4927). Its comparative statement nests appropriation
-# accounts three levels deep (TITLE I--DEPARTMENT OF DEFENSE--CIVIL > DEPARTMENT OF THE ARMY
-# > Corps of Engineers--Civil), and the bill's top-level agency is the deepest of those. The
-# comparative reader tracks only the TITLE-level agency, so the Corps accounts don't
-# agency-scope. Onboarding needs bureau-aware title tracking in parse_comparative_statement.
 
 BY_SLUG = {j.slug: j for j in JURISDICTIONS}

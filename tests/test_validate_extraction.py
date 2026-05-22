@@ -153,6 +153,10 @@ _MAX_UNVALIDATED = {
     "labor_hhs": 15,
     # Defense (comparative source): every leaf appropriation account recalls.
     "defense": 0,
+    # Energy-Water (comparative source): 6 structural misses — accounts the bill itemizes
+    # (Nuclear Energy), fee-offset gross/net (NRC salaries and expenses), or general-provision
+    # transfers; verified not single bill tokens, not parser errors.
+    "energy_water": 6,
 }
 
 _REPORT_JURISDICTIONS = [j for j in JURISDICTIONS if j.fixture_path.exists()]
