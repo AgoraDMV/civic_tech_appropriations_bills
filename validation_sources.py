@@ -26,6 +26,11 @@ class Jurisdiction:
     version: str  # bill version filename, e.g. "1_reported-in-senate.xml"
     fy: str  # "FY 2025"
     chamber: str  # "senate"
+    # Which report table the builder reads. Most jurisdictions carry account amounts in the
+    # narrative's 3-line summary blocks ("summary"). "Tabular" jurisdictions (Defense) print
+    # accounts only in the wide comparative statement, so the builder reads that instead
+    # ("comparative"; committee-recommendation column, in thousands). See parsers/committee_report.py.
+    source: str = "summary"
 
     @property
     def fixture_path(self) -> Path:
@@ -40,7 +45,7 @@ class Jurisdiction:
         return Path("bills") / self.bill_id / self.version
 
 
-def _senate_fy25(slug, display, srpt, s_num, bill_id):
+def _senate_fy25(slug, display, srpt, s_num, bill_id, source="summary"):
     return Jurisdiction(
         slug=slug,
         display=display,
@@ -50,6 +55,7 @@ def _senate_fy25(slug, display, srpt, s_num, bill_id):
         version="1_reported-in-senate.xml",
         fy="FY 2025",
         chamber="senate",
+        source=source,
     )
 
 
@@ -62,11 +68,17 @@ JURISDICTIONS = [
     _senate_fy25("state_foreign_ops", "State-Foreign Operations", "200", "4797", "118-s-4797"),
     _senate_fy25("interior_environment", "Interior-Environment", "201", "4802", "118-s-4802"),
     _senate_fy25("financial_services", "Financial Services-General Government", "206", "4928", "118-s-4928"),
+    # Labor-HHS carries 123 summary blocks in its narrative, so it uses the summary source
+    # like the rest despite being a large bill; its comparative statement is over-decomposed.
+    _senate_fy25("labor_hhs", "Labor-HHS-Education", "207", "4942", "118-s-4942"),
+    # Tabular jurisdictions: accounts appear only in the comparative statement (in thousands).
+    _senate_fy25("defense", "Defense", "204", "4921", "118-s-4921", source="comparative"),
 ]
 
-# Deferred: tabular jurisdictions whose reports present amounts in wide comparative tables
-# rather than 3-line summary blocks, so they need the comparative-statement source (Phase 2)
-# before they validate cleanly: Energy-Water (srpt205/S.4927), Defense (srpt204/S.4921),
-# Labor-HHS (srpt207/S.4942).
+# Deferred: Energy-Water (srpt205/S.4927). Its comparative statement nests appropriation
+# accounts three levels deep (TITLE I--DEPARTMENT OF DEFENSE--CIVIL > DEPARTMENT OF THE ARMY
+# > Corps of Engineers--Civil), and the bill's top-level agency is the deepest of those. The
+# comparative reader tracks only the TITLE-level agency, so the Corps accounts don't
+# agency-scope. Onboarding needs bureau-aware title tracking in parse_comparative_statement.
 
 BY_SLUG = {j.slug: j for j in JURISDICTIONS}
