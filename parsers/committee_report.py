@@ -27,6 +27,17 @@ from dataclasses import dataclass
 
 _PRE_RE = re.compile(r"<pre>(.*?)</pre>", re.DOTALL | re.IGNORECASE)
 _COMMITTEE_REC_RE = re.compile(r"^Committee recommendation\.{2,}\s+\$?([\d,]+)\s*$")
+# A title heading in the narrative is two centered lines: the Roman numeral alone, then
+# (after a blank) the department/agency name. The one-line "TITLE N--NAME" form appears
+# only later in the comparative statement, so matching the bare numeral keeps title
+# tracking anchored to the narrative the summary blocks live in.
+_TITLE_NUMERAL_RE = re.compile(r"^TITLE [IVXLC]+$")
+# A comparative-statement data row: an item label joined by leader dots to a tail of
+# right-aligned numeric columns. The non-greedy label stops at the first dot run (its own
+# leader), leaving the columns — including blank cells, which render as their own dot runs.
+_COMPARATIVE_ROW_RE = re.compile(r"^(\s*.*?\S)\.{2,}\s+(.*\d.*)$")
+_BLANK_CELL_RE = re.compile(r"^\.{2,}$")
+_NUMERIC_CELL_RE = re.compile(r"^[+\-]?\(?-?[\d,]+\)?$")
 # Qualifier lines sit between an account heading and its summary rows. They are ALL-CAPS
 # (so they would otherwise pass the heading test) but name a funding mechanism, not an
 # account. GPO renders them with or without the enclosing parentheses, so match on the
@@ -36,11 +47,20 @@ _QUALIFIER_RE = re.compile(r"^\(?(?:INCLUDING|LIMITATION|RESCISSION)\b")
 
 
 @dataclass(frozen=True)
+class ComparativeRow:
+    """One data row of the comparative statement (amounts in thousands of dollars)."""
+
+    item: str  # item label as printed (e.g. "Operations and administration")
+    committee_recommendation_thousands: int  # 3rd numeric column
+
+
+@dataclass(frozen=True)
 class ReportAccount:
     """One account-level ground-truth row recovered from a report summary block."""
 
     heading: str  # ALL-CAPS account name as printed
     committee_recommendation: int  # dollars (actual, not thousands)
+    title: str | None = None  # the enclosing title/agency name (e.g. "DEPARTMENT OF JUSTICE")
 
 
 def extract_pre_text(html: str) -> str:
@@ -59,15 +79,75 @@ def parse_summary_blocks(text: str) -> list[ReportAccount]:
     """
     lines = text.split("\n")
     accounts: list[ReportAccount] = []
+    current_title: str | None = None
     for i, line in enumerate(lines):
+        if _TITLE_NUMERAL_RE.match(line.strip()):
+            current_title = _title_name_after(lines, i) or current_title
+            continue
         m = _COMMITTEE_REC_RE.match(line.strip())
         if not m:
             continue
         amount = int(m.group(1).replace(",", ""))
         heading = _heading_before(lines, i)
         if heading:
-            accounts.append(ReportAccount(heading=heading, committee_recommendation=amount))
+            accounts.append(
+                ReportAccount(
+                    heading=heading,
+                    committee_recommendation=amount,
+                    title=current_title,
+                )
+            )
     return accounts
+
+
+def _title_name_after(lines: list[str], idx: int) -> str | None:
+    """Return the title/agency name on the first heading line after a `TITLE N` numeral."""
+    for j in range(idx + 1, min(idx + 4, len(lines))):
+        if lines[j].strip():
+            return lines[j].strip() if _is_heading(lines[j]) else None
+    return None
+
+
+def parse_comparative_statement(text: str) -> list[ComparativeRow]:
+    """Extract committee-recommendation amounts from the comparative-statement table.
+
+    Each data row is `<item><leader dots>  <2024>  <budget>  <committee rec>  <Δ>  <Δ>`,
+    amounts in thousands, blank cells rendered as dot runs. The committee recommendation
+    is the 3rd numeric column. Rows whose 3rd column is blank or a parenthetical memo (a
+    transfer, non-add) are skipped. Summary-block lines carry a single amount, not three
+    columns, so they do not match — the table can be fed the whole report text.
+    """
+    rows: list[ComparativeRow] = []
+    for line in text.split("\n"):
+        m = _COMPARATIVE_ROW_RE.match(line)
+        if not m:
+            continue
+        cells = _parse_cells(m.group(2))
+        if len(cells) >= 3 and cells[2] is not None:
+            rows.append(
+                ComparativeRow(
+                    item=m.group(1).strip(),
+                    committee_recommendation_thousands=cells[2],
+                )
+            )
+    return rows
+
+
+def _parse_cells(tail: str) -> list[int | None]:
+    """Tokenize a comparative-statement column tail into ints, with None for blank cells.
+
+    Parenthetical values (e.g. a transfer like "(-5,000)") are treated as blank: they are
+    non-add memo lines, not a committee recommendation."""
+    cells: list[int | None] = []
+    for tok in tail.split():
+        if _BLANK_CELL_RE.match(tok) or tok.startswith("("):
+            cells.append(None)
+        elif _NUMERIC_CELL_RE.match(tok):
+            value = int(re.sub(r"[^\d]", "", tok))
+            cells.append(-value if tok.startswith("-") else value)
+        else:
+            cells.append(None)  # wrapped label fragment or other non-cell token
+    return cells
 
 
 def _is_qualifier(line: str) -> bool:
