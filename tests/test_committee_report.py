@@ -74,6 +74,40 @@ def test_parse_summary_blocks_captures_title():
     assert blocks[0].committee_recommendation == 145_000_000
 
 
+# A bureau is an indented, mixed-case header between the title and the ALL-CAPS account.
+# It disambiguates the many accounts that share a name (every DOJ bureau has a "SALARIES
+# AND EXPENSES"), so it maps to match_path[1] when locating the bill node.
+BUREAU_BLOCK = """\
+                                TITLE II
+
+                         DEPARTMENT OF JUSTICE
+
+    The Committee recommends a total of $38,425,950,000 for the
+Department of Justice.
+
+                    Federal Bureau of Investigation
+
+
+                         SALARIES AND EXPENSES
+
+Appropriations, 2024.................................... $10,643,713,000
+Budget estimate, 2025...................................  11,272,944,000
+Committee recommendation................................  10,761,762,000
+"""
+
+
+def test_parse_summary_blocks_captures_bureau():
+    blocks = parse_summary_blocks(BUREAU_BLOCK)
+    assert len(blocks) == 1
+    assert blocks[0].title == "DEPARTMENT OF JUSTICE"
+    assert blocks[0].bureau == "Federal Bureau of Investigation"
+    assert blocks[0].heading == "SALARIES AND EXPENSES"
+
+
+def test_parse_summary_blocks_bureau_is_none_without_one():
+    assert parse_summary_blocks(BASIC_BLOCK)[0].bureau is None
+
+
 # A parenthetical qualifier line sits between the heading and the summary rows; the
 # reader must walk past it to the real ALL-CAPS heading.
 PARENTHETICAL_BLOCK = """\

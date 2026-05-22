@@ -60,7 +60,8 @@ class ReportAccount:
 
     heading: str  # ALL-CAPS account name as printed
     committee_recommendation: int  # dollars (actual, not thousands)
-    title: str | None = None  # the enclosing title/agency name (e.g. "DEPARTMENT OF JUSTICE")
+    title: str | None = None  # enclosing title/agency (e.g. "DEPARTMENT OF JUSTICE")
+    bureau: str | None = None  # enclosing bureau (e.g. "Federal Bureau of Investigation")
 
 
 def extract_pre_text(html: str) -> str:
@@ -80,9 +81,14 @@ def parse_summary_blocks(text: str) -> list[ReportAccount]:
     lines = text.split("\n")
     accounts: list[ReportAccount] = []
     current_title: str | None = None
+    current_bureau: str | None = None
     for i, line in enumerate(lines):
         if _TITLE_NUMERAL_RE.match(line.strip()):
             current_title = _title_name_after(lines, i) or current_title
+            current_bureau = None  # bureau context resets at each new title/agency
+            continue
+        if _is_bureau_header(line):
+            current_bureau = line.strip()
             continue
         m = _COMMITTEE_REC_RE.match(line.strip())
         if not m:
@@ -95,9 +101,26 @@ def parse_summary_blocks(text: str) -> list[ReportAccount]:
                     heading=heading,
                     committee_recommendation=amount,
                     title=current_title,
+                    bureau=current_bureau,
                 )
             )
     return accounts
+
+
+def _is_bureau_header(line: str) -> bool:
+    """True if a line is an indented, mixed-case bureau header (e.g. "Federal Bureau of
+    Investigation") — the sub-agency context between a title and an ALL-CAPS account.
+
+    Distinguished from: titles/accounts (ALL-CAPS, no lowercase), qualifier lines
+    (parenthesized), and narrative prose (flush-left or only lightly indented, and long).
+    """
+    indent = len(line) - len(line.lstrip())
+    s = line.strip()
+    if indent < 8 or not s or "...." in s or _is_qualifier(s):
+        return False
+    if not (s[0].isupper() and any(c.islower() for c in s)):
+        return False
+    return len(s.split()) <= 8 and not s.endswith((".", ":", ";", ","))
 
 
 def _title_name_after(lines: list[str], idx: int) -> str | None:
