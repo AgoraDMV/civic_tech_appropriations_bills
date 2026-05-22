@@ -19,6 +19,7 @@ internal-only tests cannot detect. Two jurisdictions, two external sources:
 """
 
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -144,6 +145,12 @@ def _load_cjs_fixture():
         return json.load(f)
 
 
+def _normalize(name: str) -> str:
+    """Lowercase and strip punctuation, matching the form of a node's match_path segments
+    (e.g. report title "DEPARTMENT OF JUSTICE" -> "department of justice")."""
+    return re.sub(r"[^a-z0-9 ]", "", name.lower()).strip()
+
+
 cjs_skip_if_missing = pytest.mark.skipif(
     not (CJS_FIXTURE_PATH.exists() and CJS_BILL_XML.exists()),
     reason="CJS validation fixture or bill XML not present (fetch via scripts/build_validation_cjs.py docstring)",
@@ -154,9 +161,11 @@ cjs_skip_if_missing = pytest.mark.skipif(
 class TestCJSValidation:
     """Validate Commerce-Justice-Science amounts against the S.4795 committee report.
 
-    External breadth probe for GitHub #8. Amount-recall: each committee-recommendation
-    amount the report states should appear among the amounts the parser extracts from the
-    bill XML, except for documented source-side discrepancies.
+    External breadth probe for GitHub #8. Agency-scoped recall: each committee-
+    recommendation amount the report states should appear among the amounts the parser
+    extracts under the *matching top-level node* (the appropriations title/agency), not
+    merely somewhere in the bill — so a misassignment across agencies is caught. Documented
+    source-side discrepancies are allow-listed.
     """
 
     @pytest.fixture(scope="class")
@@ -164,38 +173,57 @@ class TestCJSValidation:
         return _load_cjs_fixture()
 
     @pytest.fixture(scope="class")
-    def bill_amounts(self):
-        """Every dollar amount the parser extracts from the CJS bill XML."""
-        tree = normalize_bill(CJS_BILL_XML)
-        amounts = set()
-        for node in tree.nodes:
-            amounts.update(extract_amounts(node.body_text))
-        return amounts
+    def amounts_by_agency(self):
+        """Amounts the parser extracts, grouped by top-level node (match_path[0]).
 
-    def test_amounts_present(self, fixture_data, bill_amounts):
-        """Each report committee-recommendation amount appears in the parser's output."""
+        match_path[0] is the appropriations title/agency (e.g. "department of justice"),
+        onto which the report's title context maps. Grouping lets us check each amount
+        appears under the right agency.
+        """
+        tree = normalize_bill(CJS_BILL_XML)
+        by_agency: dict[str, set[int]] = {}
+        for node in tree.nodes:
+            if not node.match_path:
+                continue
+            by_agency.setdefault(node.match_path[0], set()).update(extract_amounts(node.body_text))
+        return by_agency
+
+    def test_amounts_present_under_correct_agency(self, fixture_data, amounts_by_agency):
+        """Each committee-recommendation amount appears under its title's node group.
+
+        Stronger than bare amount-recall: it catches the parser assigning an amount to the
+        wrong agency. Falls back to any-agency only when a row has no title context.
+        """
+        all_amounts = set().union(*amounts_by_agency.values())
         missing = []
         for account in fixture_data["accounts"]:
             amount = account["expected_amount"]
-            key = (account["excel_name"], amount)
-            if amount in bill_amounts or key in _KNOWN_REPORT_DISCREPANCIES:
+            if (account["excel_name"], amount) in _KNOWN_REPORT_DISCREPANCIES:
                 continue
-            missing.append(f"{account['excel_name']}: expected ${amount:,}")
+            title = account.get("title")
+            if title is not None:
+                present = amount in amounts_by_agency.get(_normalize(title), set())
+            else:
+                present = amount in all_amounts
+            if not present:
+                missing.append(f"{title} / {account['excel_name']}: expected ${amount:,}")
         assert missing == [], (
-            f"{len(missing)} report amounts not extracted from the bill (possible "
-            f"parser overfitting or a new source discrepancy):\n" + "\n".join(f"  {m}" for m in missing[:10])
+            f"{len(missing)} report amounts not extracted under the right agency (possible "
+            f"parser overfitting, misassignment, or a new source discrepancy):\n"
+            + "\n".join(f"  {m}" for m in missing[:10])
         )
 
-    def test_known_discrepancies_are_still_absent(self, fixture_data, bill_amounts):
+    def test_known_discrepancies_are_still_absent(self, fixture_data, amounts_by_agency):
         """Guard the allow-list: if a documented discrepancy starts matching, the entry is
         stale and should be removed (or it masks a real change)."""
+        all_amounts = set().union(*amounts_by_agency.values())
         fixture_keys = {(a["excel_name"], a["expected_amount"]) for a in fixture_data["accounts"]}
         stale = []
         for key in _KNOWN_REPORT_DISCREPANCIES:
             name, amount = key
             if key not in fixture_keys:
                 stale.append(f"{name} ${amount:,} (no longer in fixture)")
-            elif amount in bill_amounts:
+            elif amount in all_amounts:
                 stale.append(f"{name} ${amount:,} (now present in bill; allow-list entry obsolete)")
         assert stale == [], "Stale _KNOWN_REPORT_DISCREPANCIES entries:\n" + "\n".join(f"  {s}" for s in stale)
 
@@ -212,3 +240,14 @@ class TestCJSValidation:
     def test_validation_count(self, fixture_data):
         """Fixture has a meaningful number of account-level entries."""
         assert len(fixture_data["accounts"]) >= 50
+
+    def test_rows_carry_title_context(self, fixture_data, amounts_by_agency):
+        """Every row has a title that resolves to a real top-level node, so the recall
+        check is genuinely agency-scoped and cannot silently fall back to any-agency."""
+        agencies = set(amounts_by_agency)
+        bad = [
+            f"{a['excel_name']} (title={a.get('title')!r})"
+            for a in fixture_data["accounts"]
+            if a.get("title") is None or _normalize(a["title"]) not in agencies
+        ]
+        assert bad == [], "Rows without a resolvable title:\n" + "\n".join(f"  {b}" for b in bad[:10])

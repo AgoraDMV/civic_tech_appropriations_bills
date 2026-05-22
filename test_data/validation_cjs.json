@@ -1,12 +1,13 @@
 {
   "source": "CRPT-118srpt198 (Senate Report 118-198), CJS explanatory statement for S.4795",
-  "note": "Commerce-Justice-Science FY2025 (Reported in Senate) account amounts, extracted from the committee report's 3-line summary blocks and validated against the bill XML. Committee-recommendation amounts are in actual dollars. External ground truth for GitHub #8 (jurisdiction breadth beyond Legislative Branch). Regenerate with scripts/build_validation_cjs.py.",
+  "note": "Commerce-Justice-Science FY2025 (Reported in Senate) account amounts, extracted from the committee report's 3-line summary blocks and validated against the bill XML. Committee-recommendation amounts are in actual dollars; `title` is the enclosing appropriations title/agency, used for agency-scoped recall (the amount must appear under the matching top-level node). External ground truth for GitHub #8 (jurisdiction breadth beyond Legislative Branch). Regenerate with scripts/build_validation_cjs.py.",
   "accounts": [
     {
       "bill": "118-s-4795",
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "OPERATIONS AND ADMINISTRATION",
       "expected_amount": 648000000
     },
@@ -15,6 +16,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "OPERATIONS AND ADMINISTRATION",
       "expected_amount": 206000000
     },
@@ -23,6 +25,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "ECONOMIC DEVELOPMENT ASSISTANCE PROGRAMS",
       "expected_amount": 410000000
     },
@@ -31,6 +34,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 73000000
     },
@@ -39,6 +43,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "MINORITY BUSINESS DEVELOPMENT",
       "expected_amount": 70000000
     },
@@ -47,6 +52,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 130000000
     },
@@ -55,6 +61,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "CURRENT SURVEYS AND PROGRAMS",
       "expected_amount": 367347000
     },
@@ -63,6 +70,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "PERIODIC CENSUSES AND PROGRAMS",
       "expected_amount": 1210344000
     },
@@ -71,6 +79,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 59650000
     },
@@ -79,6 +88,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "FACILITIES MANAGEMENT AND CONSTRUCTION",
       "expected_amount": 2000000
     },
@@ -87,6 +97,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 4554940000
     },
@@ -95,6 +106,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SCIENTIFIC AND TECHNICAL RESEARCH AND SERVICES",
       "expected_amount": 1064244000
     },
@@ -103,6 +115,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "INDUSTRIAL TECHNOLOGY SERVICES",
       "expected_amount": 225000000
     },
@@ -111,6 +124,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "CONSTRUCTION OF RESEARCH FACILITIES",
       "expected_amount": 245600000
     },
@@ -119,6 +133,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "OPERATIONS, RESEARCH, AND FACILITIES",
       "expected_amount": 4679077000
     },
@@ -127,6 +142,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "NOAA PROCUREMENT, ACQUISITION AND CONSTRUCTION",
       "expected_amount": 1961516000
     },
@@ -135,6 +151,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "PACIFIC COASTAL SALMON RECOVERY FUND",
       "expected_amount": 70000000
     },
@@ -143,6 +160,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "FISHERIES DISASTER ASSISTANCE",
       "expected_amount": 300000
     },
@@ -151,6 +169,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "FISHERMEN'S CONTINGENCY FUND",
       "expected_amount": 349000
     },
@@ -159,6 +178,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 95000000
     },
@@ -167,6 +187,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "RENOVATION AND MODERNIZATION",
       "expected_amount": 1142000
     },
@@ -175,6 +196,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF COMMERCE",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "expected_amount": 50000000
     },
@@ -183,6 +205,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 145000000
     },
@@ -191,6 +214,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "JUSTICE INFORMATION SHARING TECHNOLOGY",
       "expected_amount": 155029000
     },
@@ -199,6 +223,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "EXECUTIVE OFFICE FOR IMMIGRATION REVIEW",
       "expected_amount": 860000000
     },
@@ -207,6 +232,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 14591000
     },
@@ -215,6 +241,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES, GENERAL LEGAL ACTIVITIES",
       "expected_amount": 1130000000
     },
@@ -223,6 +250,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "THE NATIONAL CHILDHOOD VACCINE INJURY ACT",
       "expected_amount": 22700000
     },
@@ -231,6 +259,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES, ANTITRUST DIVISION",
       "expected_amount": 288000000
     },
@@ -239,6 +268,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 2664000000
     },
@@ -247,6 +277,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "UNITED STATES TRUSTEE SYSTEM FUND",
       "expected_amount": 250000000
     },
@@ -255,6 +286,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES, FOREIGN CLAIMS SETTLEMENT COMMISSION",
       "expected_amount": 2504000
     },
@@ -263,6 +295,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "FEES AND EXPENSES OF WITNESSES",
       "expected_amount": 320000000
     },
@@ -271,6 +304,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES, COMMUNITY RELATIONS SERVICE",
       "expected_amount": 25024000
     },
@@ -279,6 +313,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "ASSETS FORFEITURE FUND",
       "expected_amount": 20514000
     },
@@ -287,6 +322,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 1733000000
     },
@@ -295,6 +331,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "CONSTRUCTION",
       "expected_amount": 18000000
     },
@@ -303,6 +340,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "FEDERAL PRISONER DETENTION",
       "expected_amount": 2240697000
     },
@@ -311,6 +349,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 133512000
     },
@@ -319,6 +358,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 10761762000
     },
@@ -327,6 +367,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "CONSTRUCTION",
       "expected_amount": 211895000
     },
@@ -335,6 +376,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 2600000000
     },
@@ -343,6 +385,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 1685000000
     },
@@ -351,6 +394,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 8492588000
     },
@@ -359,6 +403,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "BUILDINGS AND FACILITIES",
       "expected_amount": 290215000
     },
@@ -367,6 +412,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "FEDERAL PRISON INDUSTRIES, INCORPORATED",
       "expected_amount": 2700000
     },
@@ -375,6 +421,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "VIOLENCE AGAINST WOMEN PREVENTION AND PROSECUTION PROGRAMS",
       "expected_amount": 739500000
     },
@@ -383,6 +430,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "RESEARCH, EVALUATION AND STATISTICS",
       "expected_amount": 75000000
     },
@@ -391,6 +439,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "STATE AND LOCAL LAW ENFORCEMENT ASSISTANCE",
       "expected_amount": 2149338000
     },
@@ -399,6 +448,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "JUVENILE JUSTICE PROGRAMS",
       "expected_amount": 407000000
     },
@@ -407,6 +457,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "PUBLIC SAFETY OFFICERS BENEFITS",
       "expected_amount": 280800000
     },
@@ -415,6 +466,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "DEPARTMENT OF JUSTICE",
       "excel_name": "COMMUNITY ORIENTED POLICING SERVICES PROGRAMS",
       "expected_amount": 548123000
     },
@@ -423,6 +475,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "SCIENCE",
       "expected_amount": 7575700000
     },
@@ -431,6 +484,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "AERONAUTICS",
       "expected_amount": 965800000
     },
@@ -439,6 +493,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "SPACE TECHNOLOGY",
       "expected_amount": 1181800000
     },
@@ -447,6 +502,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "EXPLORATION",
       "expected_amount": 7648200000
     },
@@ -455,6 +511,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "SPACE OPERATIONS",
       "expected_amount": 4399700000
     },
@@ -463,6 +520,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "SCIENCE, TECHNOLOGY, ENGINEERING, AND MATHEMATICS ENGAGEMENT",
       "expected_amount": 143500000
     },
@@ -471,6 +529,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "SAFETY, SECURITY, AND MISSION SERVICES",
       "expected_amount": 3044440000
     },
@@ -479,6 +538,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "CONSTRUCTION AND ENVIRONMENTAL COMPLIANCE AND RESTORATION",
       "expected_amount": 424100000
     },
@@ -487,6 +547,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "expected_amount": 50500000
     },
@@ -495,6 +556,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "RESEARCH AND RELATED ACTIVITIES",
       "expected_amount": 7528280000
     },
@@ -503,6 +565,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "MAJOR RESEARCH EQUIPMENT AND FACILITIES CONSTRUCTION",
       "expected_amount": 300000000
     },
@@ -511,6 +574,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "STEM EDUCATION",
       "expected_amount": 1225000000
     },
@@ -519,6 +583,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "AGENCY OPERATIONS AND AWARD MANAGEMENT",
       "expected_amount": 465000000
     },
@@ -527,6 +592,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "OFFICE OF THE NATIONAL SCIENCE BOARD",
       "expected_amount": 5220000
     },
@@ -535,6 +601,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "SCIENCE",
       "excel_name": "OFFICE OF INSPECTOR GENERAL",
       "expected_amount": 26500000
     },
@@ -543,6 +610,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 14850000
     },
@@ -551,6 +619,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 488221000
     },
@@ -559,6 +628,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 126100000
     },
@@ -567,6 +637,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "PAYMENT TO THE LEGAL SERVICES CORPORATION",
       "expected_amount": 566000000
     },
@@ -575,6 +646,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 5040000
     },
@@ -583,6 +655,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 61000000
     },
@@ -591,6 +664,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "TRADE ENFORCEMENT TRUST FUND",
       "expected_amount": 15000000
     },
@@ -599,6 +673,7 @@
       "version": "1_reported-in-senate.xml",
       "fy": "FY 2025",
       "chamber": "senate",
+      "title": "RELATED AGENCIES",
       "excel_name": "SALARIES AND EXPENSES",
       "expected_amount": 7640000
     }

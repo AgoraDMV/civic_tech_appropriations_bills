@@ -51,6 +51,7 @@ def build() -> dict:
             "version": VERSION,
             "fy": FY,
             "chamber": CHAMBER,
+            "title": acc.title,  # enclosing agency, e.g. "DEPARTMENT OF JUSTICE"
             "excel_name": acc.heading,
             "expected_amount": acc.committee_recommendation,
         }
@@ -61,9 +62,11 @@ def build() -> dict:
         "note": (
             "Commerce-Justice-Science FY2025 (Reported in Senate) account amounts, "
             "extracted from the committee report's 3-line summary blocks and validated "
-            "against the bill XML. Committee-recommendation amounts are in actual dollars. "
-            "External ground truth for GitHub #8 (jurisdiction breadth beyond Legislative "
-            "Branch). Regenerate with scripts/build_validation_cjs.py."
+            "against the bill XML. Committee-recommendation amounts are in actual dollars; "
+            "`title` is the enclosing appropriations title/agency, used for agency-scoped "
+            "recall (the amount must appear under the matching top-level node). External "
+            "ground truth for GitHub #8 (jurisdiction breadth beyond Legislative Branch). "
+            "Regenerate with scripts/build_validation_cjs.py."
         ),
         "accounts": rows,
     }
