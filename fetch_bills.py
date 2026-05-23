@@ -141,10 +141,11 @@ def version_path(
     number: int,
     index: int,
     version_type: str,
+    ext: str = "xml",
 ) -> Path:
     """Build the output path for a version file without writing anything."""
     bill_dir = output_dir / f"{congress}-{bill_type}-{number}"
-    filename = f"{index}_{sanitize_version_name(version_type)}.xml"
+    filename = f"{index}_{sanitize_version_name(version_type)}.{ext}"
     return bill_dir / filename
 
 
@@ -156,9 +157,10 @@ def save_version(
     number: int,
     index: int,
     version_type: str,
+    ext: str = "xml",
 ) -> Path:
-    """Write XML content to a structured output path. Returns the file path."""
-    path = version_path(output_dir, congress, bill_type, number, index, version_type)
+    """Write version content to a structured output path. Returns the file path."""
+    path = version_path(output_dir, congress, bill_type, number, index, version_type, ext)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)
     return path
@@ -187,6 +189,14 @@ def get_xml_url(version: dict) -> str | None:
     """Extract the XML format URL from a version's formats list."""
     for fmt in version.get("formats", []):
         if fmt.get("type") == "Formatted XML":
+            return fmt.get("url")
+    return None
+
+
+def get_pdf_url(version: dict) -> str | None:
+    """Extract the PDF format URL from a version's formats list."""
+    for fmt in version.get("formats", []):
+        if fmt.get("type") == "PDF":
             return fmt.get("url")
     return None
 

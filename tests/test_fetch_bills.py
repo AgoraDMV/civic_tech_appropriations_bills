@@ -13,6 +13,8 @@ from fetch_bills import (
     fetch_all_committee_bills,
     fetch_text_versions,
     format_version_list,
+    get_pdf_url,
+    get_xml_url,
     sanitize_version_name,
     save_version,
     version_path,
@@ -254,6 +256,11 @@ class TestSaveVersion:
         assert path.name == "3_engrossed-in-senate.xml"
         assert path.parent.name == "119-s-100"
 
+    def test_pdf_extension(self, tmp_path):
+        path = save_version(b"%PDF-1.7", tmp_path, 118, "hr", 4366, 1, "Reported in House", ext="pdf")
+        assert path.name == "1_reported-in-house.pdf"
+        assert path.read_bytes() == b"%PDF-1.7"
+
     def test_existing_dir_no_error(self, tmp_path):
         save_version(b"<a/>", tmp_path, 118, "hr", 1, 1, "Introduced in House")
         path = save_version(b"<b/>", tmp_path, 118, "hr", 1, 2, "Reported in House")
@@ -264,6 +271,31 @@ class TestVersionPath:
     def test_returns_expected_path(self, tmp_path):
         path = version_path(tmp_path, 118, "hr", 4366, 1, "Reported in House")
         assert path == tmp_path / "118-hr-4366" / "1_reported-in-house.xml"
+
+    def test_pdf_extension(self, tmp_path):
+        path = version_path(tmp_path, 118, "hr", 4366, 1, "Reported in House", ext="pdf")
+        assert path == tmp_path / "118-hr-4366" / "1_reported-in-house.pdf"
+
+
+class TestGetFormatUrls:
+    FORMATS = [
+        {"type": "Formatted Text", "url": "https://congress.gov/rh.htm"},
+        {"type": "PDF", "url": "https://congress.gov/rh.pdf"},
+        {"type": "Formatted XML", "url": "https://congress.gov/rh.xml"},
+    ]
+
+    def test_get_xml_url(self):
+        assert get_xml_url({"formats": self.FORMATS}) == "https://congress.gov/rh.xml"
+
+    def test_get_pdf_url(self):
+        assert get_pdf_url({"formats": self.FORMATS}) == "https://congress.gov/rh.pdf"
+
+    def test_get_pdf_url_absent(self):
+        only_xml = [{"type": "Formatted XML", "url": "https://congress.gov/rh.xml"}]
+        assert get_pdf_url({"formats": only_xml}) is None
+
+    def test_get_pdf_url_no_formats(self):
+        assert get_pdf_url({}) is None
 
     def test_already_downloaded_detected(self, tmp_path):
         path = version_path(tmp_path, 118, "hr", 4366, 1, "Reported in House")
