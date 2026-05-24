@@ -173,14 +173,13 @@ section of the [README](README.md#testing)). The PDF comparison tests
 to `fetch_bills.py download` to fetch both at once, e.g.
 `uv run python fetch_bills.py download 118 hr 4366 --format both`.
 
-One slow test needs a file the bill downloads do not cover. The watermark-recall
-test (`test_pdf_watermark_recall.py`) reads the reported-in-Senate PDF of S.4795,
-which carries a govinfo watermark. It skips automatically if the file is absent;
-to run it, download the PDF into `test_data/`:
+Some slow tests read files sourced directly from govinfo rather than the bill
+API (for example, the reported-in-Senate watermarked PDF of S.4795 that
+`test_pdf_watermark_recall.py` reads). They skip automatically if absent. Fetch
+them with:
 
 ```bash
-curl -L -o test_data/BILLS-118s4795rs.pdf \
-  https://www.govinfo.gov/content/pkg/BILLS-118s4795rs/pdf/BILLS-118s4795rs.pdf
+uv run python scripts/fetch_test_assets.py
 ```
 
 ### Speeding up the PDF tests for development
