@@ -138,7 +138,10 @@ _S4795_PDF = Path("test_data/BILLS-118s4795rs.pdf")
 
 
 @pytest.mark.slow
-@pytest.mark.skipif(not _S4795_PDF.exists(), reason="watermarked Senate PDF not present (govinfo BILLS-118s4795rs)")
+@pytest.mark.skipif(
+    not _S4795_PDF.exists(),
+    reason="watermarked Senate PDF not present; run scripts/fetch_test_assets.py",
+)
 def test_real_graphic_watermark_extracts_clean():
     """The real watermarked Senate copy carries a graphic-layer watermark pypdfium2 ignores.
 
